@@ -24,9 +24,6 @@ function draw () {
 	background(15);
 	game.printPlayerIds(5, 20);
 
-	// console.log(game.colliders.length);
-	// game.colliders.collide(game.colliders);
-
 	for (id in game.players) {
 		game.players[id].debug = mouseIsPressed;
 	}
@@ -46,10 +43,12 @@ function processRotation (data) {
 		game.setVelocity(data.id, data.rotY*velScale, data.rotX*velScale);
 	}
 
-	// console.log(data.id + ': {' +
-	// 	data.rotX + ',' +
-	// 	data.rotY + ',' +
-	// 	data.rotZ + '}');
+	if (debug) {
+		console.log(data.id + ': {' +
+			data.rotX + ',' +
+			data.rotY + ',' +
+			data.rotZ + '}');
+	}
 }
 
 function processTrackPad (data) {
@@ -59,9 +58,11 @@ function processTrackPad (data) {
 		game.setVelocity(data.id, data.padX*velScale, -data.padY*velScale);
 	}
 
-	// console.log(data.id + ': {' +
-	// 	data.padX + ',' +
-	// 	data.padY + '}');
+	if (debug) {
+		console.log(data.id + ': {' +
+			data.padX + ',' +
+			data.padY + '}');
+	}
 }
 
 function handleConnect (data) {

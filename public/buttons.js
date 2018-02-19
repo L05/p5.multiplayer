@@ -112,8 +112,123 @@ class TrackPad {
 }
 
 ////////////////////////////////////////
+/////////////// OCTO PAD ///////////////
+////////////////////////////////////////
+/*
+	Buttons:
+	0 = Top
+	1 = Top-Right
+	2 = Right
+	3 = Bottom-Right
+	4 = Bottom
+	5 = Bottom-Left
+	6 = Left
+	7 = Top-Left
+*/
+
+class OctoPad {
+	constructor(x_, y_, width_, height_) {
+		this.x						= x_;
+		this.y						= y_;
+		this.width				= width_;
+		this.height				= height_;
+		this.direction		= createVector(0, 0);
+		this.pdirection		= createVector(0, 0);
+		this.fillOff			= color(200, 200, 200, 255);
+		this.fillOn				= color(0, 255, 0, 255);
+		this.stroke				= color(0, 0, 0, 255);
+		this.strokeWeight = 4;
+		this.touched			= false;
+		this.changed			= false;
+		this.buttons 			= [0, 0, 0, 0, 0, 0, 0, 0];
+
+		this.buttonCenters	= [];
+		this.buttonCenters[0]	= [x_, y_ - height_*(1/3)];
+		this.buttonCenters[1]	= [x_ + width_*(1/3), y_ - height_*(1/3)];
+		this.buttonCenters[2]	= [x_ + width_*(1/3), y_];
+		this.buttonCenters[3]	= [x_ + width_*(1/3), y_ + height_*(1/3)];
+		this.buttonCenters[4]	= [x_, y_ + height_*(1/3)];
+		this.buttonCenters[5]	= [x_ - width_*(1/3), y_ + height_*(1/3)];
+		this.buttonCenters[6]	= [x_ - width_*(1/3), y_];
+		this.buttonCenters[7]	= [x_ - width_*(1/3), y_ - height_*(1/3)];
+	}
+
+	display() {
+		push();
+			rectMode(CENTER);
+			stroke(this.stroke);
+			strokeWeight(this.strokeWeight);
+
+			for (let i = 0; i < 8; i++) {
+				if (this.buttons[i] == 1) {
+					fill(this.fillOn);
+				} else {
+					fill(this.fillOff);
+				}
+
+				rect(this.buttonCenters[i][0], this.buttonCenters[i][1], this.width/3, this.height/3);
+			}
+		pop();
+	}
+
+	// Check to see if pad is touched. Set value for each direction button.
+	checkTouched() {
+		this.buttons = [0, 0, 0, 0, 0, 0, 0, 0];
+		this.touched = false;
+
+		for (let i = 0; i < touches.length; i++) {
+			for (let j = 0; j < 8; j++) {
+				if (touches[i].x >= (this.buttonCenters[j][0] - this.width/6) &&
+						touches[i].x <= (this.buttonCenters[j][0] + this.width/6) &&
+						touches[i].y >= (this.buttonCenters[j][1] - this.height/6) &&
+						touches[i].y <= (this.buttonCenters[j][1] + this.height/6)) {
+					this.buttons[j] = 1;
+					// console.log("button[" + i + "] pushed.");
+					this.touched 		= true;
+				}
+			}
+		}
+
+		// calculate x direction
+		this.direction.x 	= this.buttons[1] + this.buttons[2] + this.buttons[3] -
+												this.buttons[5] - this.buttons[6] - this.buttons[7];
+		// calculate y direction
+		this.direction.y 	= this.buttons[0] + this.buttons[1] + this.buttons[7] -
+												this.buttons[3] - this.buttons[4] - this.buttons[5];
+
+		if (this.direction.x != this.pdirection.x ||
+				this.direction.y != this.pdirection.y) {
+			this.changed = true;
+		} else {
+			this.changed = false;
+		}
+
+		this.pdirection.x = this.direction.x;
+		this.pdirection.y = this.direction.y;
+
+		return this.touched;
+	}
+
+	checkChanged() {
+		return this.changed;
+	}
+
+	// Return direction based on registered touches.
+	out() {
+		return this.direction;
+	}
+}
+
+////////////////////////////////////////
 /////////////// QUAD PAD ///////////////
 ////////////////////////////////////////
+/*
+	Buttons:
+	0 = Left
+	1 = Right
+	2 = Top
+	3 = Bottom
+*/
 
 class QuadPad {
 	constructor(x_, y_, width_, height_) {
@@ -131,7 +246,7 @@ class QuadPad {
 		this.buttons 			= [0, 0, 0, 0];
 
 		// Set directional buttons' triangle points
-		this.buttonPoints	= []
+		this.buttonPoints	= [];
 		this.buttonPoints[0] = [x_, y_, x_, y_ + height_, this.center.x, this.center.y];
 		this.buttonPoints[1] = [x_ + width_, y_, x_ + width_, y_ + height_, this.center.x, this.center.y];
 		this.buttonPoints[2] = [x_, y_, x_ + width_, y_, this.center.x, this.center.y];

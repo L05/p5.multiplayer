@@ -1,6 +1,9 @@
-/* Configure network settings here... 
+/* Configure network settings here...
 */
 
-let serverIp					= 'http://L05.play.ai';	// Server IP address
-// let serverIp	= 'http://10.0.1.16';	// Server IP address
-let serverPort				= '3000';								// Server port
+const serverIp			= 'http://L05.play.ai';	 // Server IP address
+// const serverIp      = 'http://10.0.1.16';     // Server IP address
+const serverPort		= '3000';								 // Server port
+const rotationMode  = false;
+const touchMode			= 1;					           // 0 = touchPad, 1 = octoPad
+const debug					= false;			           // Debug mode

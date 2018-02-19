@@ -6,14 +6,12 @@ This sketch is intended to be run on mobile.
 It sends the rotation data of the device to a node server
 via socket.io.
 
-Configure network settings in settings.js.
+Configure network, UI, and debug settings in settings.js.
 
 Run http-server -c-1 to start server. This will default to port 8080.
 Run http-server -c-1 -p80 to start server on open port 80.
 
 */
-
-let debug							= false;									// Debug mode
 
 // Initialize variables
 let rotation;
@@ -26,10 +24,10 @@ let socket;
 let isTouching				= false;
 let isRotating				= false;
 let b_trackPad;
+let b_octoPad;
 let playerColor;
 // let b_reset, 			// buttons
-// 		b_transmit,
-// 		b_quadPad;
+// let b_transmit;
 
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -46,13 +44,21 @@ function setup() {
 	background(playerColor);
 	textSize(16);
 
-	rotation = new Rotation();
+	if (rotationMode) { rotation = new Rotation(); }
 
 	// Create buttons
-	b_trackPad = new TrackPad(0.5*windowWidth, 0.5*windowHeight, 0.9*windowWidth, 0.9*windowWidth);
+	switch (touchMode) {
+		case 0:
+			b_trackPad = new TrackPad(0.5*windowWidth, 0.5*windowHeight, 0.9*windowWidth, 0.9*windowWidth);
+			break;
+		case 1:
+			b_octoPad = new OctoPad(0.5*windowWidth, 0.5*windowHeight, 0.9*windowWidth, 0.9*windowWidth);
+			break;
+	}
+
+
 	// b_transmit	= new ToggleButton(0.25*windowWidth, 0.90*windowHeight, 100, 50, 'transmit');
 	// b_reset			= new MomentaryButton(0.75*windowWidth, 0.90*windowHeight, 100, 50, 'resetZ');
-	// b_quadPad		= new QuadPad(0.1*windowWidth, 0.3*windowHeight, 0.8*windowWidth, 0.5*windowHeight);
 
 	// Open a connection to the web server on port 3000
 	socket = io.connect(serverIp + ':' + serverPort);
@@ -63,11 +69,13 @@ function setup() {
 	 	});
 
 	// Initialize rotation and set threshold for device
-	rotation.initRotation();
-	rotation.setRotationThreshold(0.05);
+	if (rotationMode) {
+		rotation.initRotation();
+		rotation.setRotationThreshold(0.05);
 
-	// Send initial rotation value.
-	sendRotation(0, 0, 0);
+		// Send initial rotation value.
+		sendRotation(0, 0, 0);
+	}
 
 	lastRotationSent = millis();
 }
@@ -77,6 +85,7 @@ function draw() {
 	background(playerColor);
 
 	// ROTATION (Accelerometer)
+	if (rotationMode) {
 		// Print the device's rotation values.
 		rotation.update();
 
@@ -102,19 +111,32 @@ function draw() {
 			}
 		}
 		// else { background(51); }
+	}
+
+	switch (touchMode) {
+		case 0:
+			// TRACK PAD
+			if (b_trackPad.isTouched()) {
+				sendTrackPad(b_trackPad.out().x, b_trackPad.out().y);
+			}
+
+			push();
+				b_trackPad.display();
+			pop();
+			break;
+		case 1:
+			push();
+				b_octoPad.display();
+			pop();
+			break;
+	}
+
+
+	// push();
 	//
-
-	// TRACK PAD
-		if (b_trackPad.isTouched()) {
-			sendTrackPad(b_trackPad.out().x, b_trackPad.out().y);
-		}
-
-	push();
-		b_trackPad.display();
-		// b_transmit.display();
-		// b_reset.display();
-		// b_quadPad.display();
-	pop();
+	// 	// b_transmit.display();
+	// 	// b_reset.display();
+	// pop();
 
 	textAlign(LEFT,BASELINE);
 
@@ -144,8 +166,17 @@ function draw() {
 function touchStarted() {
 	isTouching = true;
 
-	b_trackPad.checkTouched();
-	// b_quadPad.checkTouched();
+	switch (touchMode) {
+		case 0:
+			b_trackPad.checkTouched();
+			break;
+		case 1:
+			if (b_octoPad.checkTouched()) {
+				sendTrackPad(b_octoPad.out().x, b_octoPad.out().y);
+			}
+			break;
+	}
+
 	// b_transmit.checkTouched();
 
 	// If button touched, set rotOffsetZ
@@ -156,17 +187,38 @@ function touchStarted() {
 
 function touchEnded() {
 	isTouching = false;
-	if(!b_trackPad.checkTouched()) {
-		sendTrackPad(0, 0);
+
+	switch (touchMode) {
+		case 0:
+			if(!b_trackPad.checkTouched()) {
+				sendTrackPad(0, 0);
+			}
+			break;
+		case 1:
+			if (b_octoPad.checkTouched()) {
+				sendTrackPad(b_octoPad.out().x, b_octoPad.out().y);
+			} else {
+				sendTrackPad(0, 0);
+			}
+			break;
 	}
+
 	// b_reset.checkTouched();
-	// b_quadPad.checkTouched();
 	// b_transmit.checkTouched();
 }
 
 function touchMoved() {
-	b_trackPad.checkTouched();
-	// b_quadPad.checkTouched();
+	switch (touchMode) {
+		case 0:
+			b_trackPad.checkTouched();
+			break;
+		case 1:
+			b_octoPad.checkTouched()
+			if (b_octoPad.checkChanged()) {
+				sendTrackPad(b_octoPad.out().x, b_octoPad.out().y);
+			}
+			break;
+	}
 
 	// if (b_reset.checkTouched()) {
 	// 	rotation.rotOffsetZ = rotationZ;
