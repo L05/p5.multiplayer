@@ -25,6 +25,7 @@ let isTouching				= false;
 let isRotating				= false;
 let b_trackPad;
 let b_octoPad;
+let b_segTrackPad;
 let playerColor;
 let id = null;
 // let b_reset, 			// buttons
@@ -54,6 +55,9 @@ function setup() {
 			break;
 		case 1:
 			b_octoPad = new OctoPad(0.5*windowWidth, 0.5*windowHeight, 0.9*windowWidth, 0.9*windowWidth);
+			break;
+		case 2:
+			b_segTrackPad = new SegmentedTrackPad(0.5*windowWidth, 0.5*windowHeight, 0.9*windowWidth, 0.9*windowWidth, segResolution);
 			break;
 	}
 
@@ -135,6 +139,11 @@ function draw() {
 				b_octoPad.display();
 			pop();
 			break;
+		case 2:
+			push();
+				b_segTrackPad.display();
+			pop();
+			break;
 	}
 
 
@@ -181,6 +190,12 @@ function touchStarted() {
 				sendTrackPad(b_octoPad.out().x, b_octoPad.out().y);
 			}
 			break;
+		case 2:
+			// b_segTrackPad.checkTouched();
+			if (b_segTrackPad.checkTouched()) {
+				sendTrackPad(b_segTrackPad.out().x, b_segTrackPad.out().y);
+			}
+			break;
 	}
 
 	// b_transmit.checkTouched();
@@ -207,6 +222,14 @@ function touchEnded() {
 				sendTrackPad(0, 0);
 			}
 			break;
+		case 2:
+			// b_segTrackPad.checkTouched();
+			if (b_segTrackPad.checkTouched()) {
+				sendTrackPad(b_segTrackPad.out().x, b_segTrackPad.out().y);
+			} else {
+				sendTrackPad(0, 0);
+			}
+			break;
 	}
 
 	// b_reset.checkTouched();
@@ -219,9 +242,15 @@ function touchMoved() {
 			b_trackPad.checkTouched();
 			break;
 		case 1:
-			b_octoPad.checkTouched()
+			b_octoPad.checkTouched();
 			if (b_octoPad.checkChanged()) {
 				sendTrackPad(b_octoPad.out().x, b_octoPad.out().y);
+			}
+			break;
+		case 2:
+			b_segTrackPad.checkTouched();
+			if (b_segTrackPad.checkChanged()) {
+				sendTrackPad(b_segTrackPad.out().x, b_segTrackPad.out().y);
 			}
 			break;
 	}
