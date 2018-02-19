@@ -206,6 +206,8 @@ class OctoPad {
 		this.direction.y 	= this.buttons[0] + this.buttons[1] + this.buttons[7] -
 												this.buttons[3] - this.buttons[4] - this.buttons[5];
 
+		this.direction.normalize();
+
 		// Check to see if input has changed.
 		if (this.direction.x != this.pdirection.x ||
 				this.direction.y != this.pdirection.y) {
