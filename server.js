@@ -16,13 +16,14 @@ let socket = require('socket.io');
 // connect it to the web server
 let io = socket(server);
 
-// setup a connectino event
+// setup a connection event
 io.sockets.on('connection', newConnection);
 
 function newConnection(socket) {
 	clients.push(socket.id);
 	console.log('\n' + socket.id + 'has connected!');
 	console.log('number of clients: ' + clients.length);
+	socket.emit('id', socket.id);
 
 	// Add a screen client if it requests to join.
 	socket.on('join', function (data) {

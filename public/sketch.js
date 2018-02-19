@@ -26,6 +26,7 @@ let isRotating				= false;
 let b_trackPad;
 let b_octoPad;
 let playerColor;
+let id = null;
 // let b_reset, 			// buttons
 // let b_transmit;
 
@@ -62,6 +63,11 @@ function setup() {
 
 	// Open a connection to the web server on port 3000
 	socket = io.connect(serverIp + ':' + serverPort);
+	socket.on('id', function(data) {
+		id = data;
+		console.log("id: " + id);
+	});
+
 	socket.emit('clientConnect', {
 		 r: red(playerColor)/255,
 		 g: green(playerColor)/255,
@@ -263,6 +269,7 @@ function sendRotation(rotX_, rotY_, rotZ_) {
 
   // Send rotation data to server
   socket.emit('rotation', data);
+	// socket.in('screen').emit('rotation', data);
 }
 
 // Print rotation data to screen.

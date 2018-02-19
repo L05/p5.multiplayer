@@ -159,6 +159,7 @@ class OctoPad {
 			stroke(this.stroke);
 			strokeWeight(this.strokeWeight);
 
+			// Draw buttons.
 			for (let i = 0; i < 8; i++) {
 				if (this.buttons[i] == 1) {
 					fill(this.fillOn);
@@ -167,15 +168,25 @@ class OctoPad {
 				}
 
 				rect(this.buttonCenters[i][0], this.buttonCenters[i][1], this.width/3, this.height/3);
+
+				// Draw arrows.
+				fill(0);
+				push();
+					translate(this.buttonCenters[i][0], this.buttonCenters[i][1]);
+					rotate(i*PI/4);
+					triangle(0, -10, -10, 10, 10, 10);
+				pop();
 			}
 		pop();
 	}
 
-	// Check to see if pad is touched. Set value for each direction button.
+	// Check to see if pad is touched and returns boolean.
+	// Set value for each direction button.
 	checkTouched() {
 		this.buttons = [0, 0, 0, 0, 0, 0, 0, 0];
 		this.touched = false;
 
+		// Check each button.
 		for (let i = 0; i < touches.length; i++) {
 			for (let j = 0; j < 8; j++) {
 				if (touches[i].x >= (this.buttonCenters[j][0] - this.width/6) &&
@@ -183,7 +194,6 @@ class OctoPad {
 						touches[i].y >= (this.buttonCenters[j][1] - this.height/6) &&
 						touches[i].y <= (this.buttonCenters[j][1] + this.height/6)) {
 					this.buttons[j] = 1;
-					// console.log("button[" + i + "] pushed.");
 					this.touched 		= true;
 				}
 			}
@@ -196,6 +206,7 @@ class OctoPad {
 		this.direction.y 	= this.buttons[0] + this.buttons[1] + this.buttons[7] -
 												this.buttons[3] - this.buttons[4] - this.buttons[5];
 
+		// Check to see if input has changed.
 		if (this.direction.x != this.pdirection.x ||
 				this.direction.y != this.pdirection.y) {
 			this.changed = true;
@@ -209,97 +220,13 @@ class OctoPad {
 		return this.touched;
 	}
 
+	// Returns whether or not input has changed as boolean.
 	checkChanged() {
 		return this.changed;
 	}
 
 	// Return direction based on registered touches.
 	out() {
-		return this.direction;
-	}
-}
-
-////////////////////////////////////////
-/////////////// QUAD PAD ///////////////
-////////////////////////////////////////
-/*
-	Buttons:
-	0 = Left
-	1 = Right
-	2 = Top
-	3 = Bottom
-*/
-
-class QuadPad {
-	constructor(x_, y_, width_, height_) {
-		this.x						= x_;
-		this.y						= y_;
-		this.width				= width_;
-		this.height				= height_;
-		this.center				= createVector(x_ + width_/2, y_ + height_/2)
-		this.direction		= createVector(0, 0);
-		this.fillOff			= color(200, 200, 200, 255);
-		this.fillOn				= color(0, 255, 0, 255);
-		this.stroke				= color(0, 0, 0, 255);
-		this.strokeWeight = 4;
-		this.touched			= false;
-		this.buttons 			= [0, 0, 0, 0];
-
-		// Set directional buttons' triangle points
-		this.buttonPoints	= [];
-		this.buttonPoints[0] = [x_, y_, x_, y_ + height_, this.center.x, this.center.y];
-		this.buttonPoints[1] = [x_ + width_, y_, x_ + width_, y_ + height_, this.center.x, this.center.y];
-		this.buttonPoints[2] = [x_, y_, x_ + width_, y_, this.center.x, this.center.y];
-		this.buttonPoints[3] = [x_, y_ + height_, x_ + width_, y_ + height_, this.center.x, this.center.y];
-	}
-
-	display() {
-		push();
-			stroke(this.stroke);
-			strokeWeight(this.strokeWeight);
-
-			for (let i = 0; i < 4; i++) {
-				if (this.buttons[i] == 1) {
-					fill(this.fillOn);
-				} else {
-					fill(this.fillOff);
-				}
-
-				triangle(this.buttonPoints[i][0], this.buttonPoints[i][1],
-					this.buttonPoints[i][2], this.buttonPoints[i][3],
-					this.buttonPoints[i][4], this.buttonPoints[i][5]);
-			}
-
-		pop();
-	}
-
-	// Check to see if pad is touched. Set value for each direction button.
-	checkTouched() {
-		this.buttons = [0, 0, 0, 0];
-		this.touched = false;
-
-
-		for (let i = 0; i < touches.length; i++) {
-			for (let j = 0; j < 4; j++) {
-				if (isInsideTriangle(touches[i].x, touches[i].y,
-						this.buttonPoints[j][0], this.buttonPoints[j][1],
-						this.buttonPoints[j][2], this.buttonPoints[j][3],
-						this.buttonPoints[j][4], this.buttonPoints[j][5]
-						)) {
-					this.buttons[j] = 1;
-					this.touched 	= true;
-				}
-			}
-		}
-
-		this.direction.x = this.buttons[0] - this.buttons[1];	// calculate x direction
-		this.direction.y = this.buttons[2] - this.buttons[3];	// calculate y direction
-
-		return this.touched;
-	}
-
-	// Return direction based on registered touches.
-	getDirection() {
 		return this.direction;
 	}
 }
