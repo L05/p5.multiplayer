@@ -4,8 +4,8 @@ let screens	= [];
 // setup express web server and listen on port 3000
 let express = require('express');
 let app = express();
-let server = app.listen(3000);
 let port=Number(process.env.PORT || 3000);
+let server = app.listen(port);
 
 app.use(express.static('public'));
 
