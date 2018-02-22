@@ -131,13 +131,14 @@ class SegmentedTrackPad {
 			rectMode(CENTER);
 			rect(this.x, this.y, this.width, this.height, this.round);
 
+			stroke(0, 0, 0, 31);
 			strokeWeight(1);
 			for (let i = 1; i <= this.divs; i++) {
 				line(this.x-this.width/2+i*this.width/(this.divs+1), this.y-this.height/2, this.x-this.width/2+i*this.width/(this.divs+1), this.y+this.height/2);
 				line(this.x-this.width/2, this.y-this.height/2+i*this.height/(this.divs+1), this.x+this.width/2, this.y-this.height/2+i*this.height/(this.divs+1));
 			}
 
-
+			stroke(this.stroke);
 			strokeWeight(this.strokeWeight);
 
 			// Draw finger guide
