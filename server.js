@@ -21,35 +21,54 @@ let io = socket(server);
 io.sockets.on('connection', newConnection);
 
 function newConnection(socket) {
-	clients.push(socket.id);
+
 	console.log('\n' + socket.id + 'has connected!');
-	console.log('number of clients: ' + clients.length);
 	socket.emit('id', socket.id);
 
 	// Add a screen client if it requests to join.
 	socket.on('join', function (data) {
+		// add new socket to respective room (i.e. clients or screens)
 		socket.join(data.name);
-		screens.push(socket.id);
-		console.log('screen added.\tnumber of screens: ' + screens.length);
+
+		if (data.name == 'client') {
+			// add client socket id to clients list
+			clients.push(socket.id);
+			console.log('client added.\tnumber of clients: ' + clients.length);
+
+			// add client to its own room
+			socket.join(socket.id);
+		} else if (data.name == 'screen') {
+			// add screen socket id to screens list
+			screens.push(socket.id);
+			console.log('screen added.\tnumber of screens: ' + screens.length);
+		} else {
+			console.log('warning: data type not recognized.')
+		}
+
 	})
 
 	// Handle client disconnects.
 	socket.on('disconnect', function () {
 		console.log('\n' + socket.id + ' has been disconnected!');
 		io.sockets.in('screen').emit('clientDisconnect', {id: socket.id});
-		// Remove from client array
-		let i = clients.indexOf(socket.id);
-		clients.splice(i, 1);
-		console.log('number of clients: ' + clients.length);
 
-		// If screen, remove the screens array.
-		for (let i = 0; i < screens.length; i++) {
-			if (socket.id == screens[i]) {
-				i = screens.indexOf(socket.id);
-				screens.splice(i, 1);
-				console.log('screen removed.\tnumber of screens: ' + screens.length);
+		if (clients.includes(socket.id)) {
+			// If client, remove from clients array.
+			let i = clients.indexOf(socket.id);
+			clients.splice(i, 1);
+			console.log('number of clients: ' + clients.length);
+		} else if (screens.includes(socket.id)) {
+			// If screen, remove the screens array.
+			for (let i = 0; i < screens.length; i++) {
+				if (socket.id == screens[i]) {
+					i = screens.indexOf(socket.id);
+					screens.splice(i, 1);
+					console.log('screen removed.\tnumber of screens: ' + screens.length);
+				}
 			}
 		}
+
+
 	})
 
 	// Handle client connects.
@@ -77,4 +96,11 @@ function newConnection(socket) {
 	function rerouteTrackPad(data) {
 		io.sockets.in('screen').emit('trackPad', {id: socket.id, padX: data.padX, padY: data.padY});
 	}
+
+	socket.on('mode', rerouteMode);
+
+	function rerouteMode(data) {
+		io.sockets.in('screen').emit('mode', {id: socket.id, mode: data.mode});
+	}
+
 }

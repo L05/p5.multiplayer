@@ -110,6 +110,7 @@ class SegmentedTrackPad {
 		this.fillFinger		= color(255, 255);
 		this.stroke				= color(0, 0, 0, 255);
 		this.strokeWeight = 4;
+		this.round 				= 0;
 
 		this.touched			= false;
 		this.changed			= false;
@@ -198,6 +199,10 @@ class SegmentedTrackPad {
 
 	setFingerRadius(fingerRadius_) {
 		this.fingerRadius = fingerRadius_;
+	}
+
+	setRound(round_) {
+		this.round = round_;
 	}
 }
 
@@ -435,12 +440,12 @@ class ToggleButton {
 	checkTouched() {
 		this.touched = false;
 
-		for (i = 0; i < touches.length; i++) {
+		for (let i = 0; i < touches.length; i++) {
 			if (touches[i].x > this.x-this.width/2 && touches[i].x < this.x+this.width/2 &&
 				touches[i].y > this.y-this.height/2 && touches[i].y < this.y+this.height/2) {
 				this.touched = true;
 
-				if (this.state) {
+				if (this.state == true) {
 					this.state = false;
 				} else {
 					this.state = true;
@@ -453,6 +458,10 @@ class ToggleButton {
 
 	getState() {
 		return this.state;
+	}
+
+	setState(state_) {
+		this.state = state_;
 	}
 
 	setRound(round_) {

@@ -26,10 +26,11 @@ let isRotating				= false;
 let b_trackPad;
 let b_octoPad;
 let b_segTrackPad;
+let b_mode;
 let playerColor;
 let id = null;
 // let b_reset, 			// buttons
-// let b_transmit;
+let b_transmit;
 
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -51,22 +52,39 @@ function setup() {
 	// Create buttons
 	switch (touchMode) {
 		case 0:
-			b_trackPad = new TrackPad(0.5*windowWidth, 0.5*windowHeight, 0.9*windowWidth, 0.9*windowWidth);
+			b_trackPad = new TrackPad(
+				padDimensions[0]*windowWidth,
+				padDimensions[1]*windowHeight,
+				padDimensions[2]*windowWidth,
+				padDimensions[2]*windowWidth);
 			break;
 		case 1:
-			b_octoPad = new OctoPad(0.5*windowWidth, 0.5*windowHeight, 0.9*windowWidth, 0.9*windowWidth);
+			b_octoPad = new OctoPad(
+				padDimensions[0]*windowWidth,
+				padDimensions[1]*windowHeight,
+				padDimensions[2]*windowWidth,
+				padDimensions[2]*windowWidth);
 			break;
 		case 2:
-			b_segTrackPad = new SegmentedTrackPad(0.5*windowWidth, 0.5*windowHeight, 0.9*windowWidth, 0.9*windowWidth, segResolution);
+			b_segTrackPad = new SegmentedTrackPad(
+				padDimensions[0]*windowWidth,
+				padDimensions[1]*windowHeight,
+				padDimensions[2]*windowWidth,
+				padDimensions[2]*windowWidth,
+				segResolution);
+			b_segTrackPad.setRound(25);
 			break;
 	}
 
+	b_mode = new ToggleButton(0.50*windowWidth, 0.125*windowHeight, 0.2*windowWidth, 0.2*windowWidth, 'X');
+	b_mode.setRound(0.075*windowWidth);
 
-	// b_transmit	= new ToggleButton(0.25*windowWidth, 0.90*windowHeight, 100, 50, 'transmit');
+	// b_transmit	= new ToggleButton(0.75*windowWidth, 0.10*windowHeight, 100, 50, 'transmit');
 	// b_reset			= new MomentaryButton(0.75*windowWidth, 0.90*windowHeight, 100, 50, 'resetZ');
 
 	// Open a connection to the web server on port 3000
 	socket = io.connect(serverIp + ':' + serverPort);
+	socket.emit('join', {name: 'client'});
 	socket.on('id', function(data) {
 		id = data;
 		console.log("id: " + id);
@@ -146,14 +164,18 @@ function draw() {
 			break;
 	}
 
-
-	// push();
-	//
+	push();
+		b_mode.display();
 	// 	// b_transmit.display();
 	// 	// b_reset.display();
-	// pop();
+	pop();
 
 	textAlign(LEFT,BASELINE);
+
+	// push();
+	// 	fill(255);
+	// 	text(deviceOrientation, 5, 5);
+	// pop();
 
 	// fill(255);
 	// text(b_trackPad.direction.x.toFixed(2) + ', ' + b_trackPad.direction.y.toFixed(2) + '\t' + b_trackPad.pdirection.x.toFixed(2) + ', ' + b_trackPad.pdirection.y.toFixed(2), 5, height-10);
@@ -198,6 +220,10 @@ function touchStarted() {
 			break;
 	}
 
+	if (b_mode.checkTouched()) {
+		sendMode(b_mode.getState());
+	}
+
 	// b_transmit.checkTouched();
 
 	// If button touched, set rotOffsetZ
@@ -230,6 +256,10 @@ function touchEnded() {
 				sendTrackPad(0, 0);
 			}
 			break;
+	}
+
+	if (b_mode.checkTouched()) {
+		sendMode(b_mode.getState());
 	}
 
 	// b_reset.checkTouched();
@@ -272,7 +302,7 @@ function sendTrackPad(padX_, padY_) {
 	);
 
   // Prepare rotation data
-  let data = {
+  const data = {
     padX: padX_,
     padY: padY_
   }
@@ -290,7 +320,7 @@ function sendRotation(rotX_, rotY_, rotZ_) {
 		rotZ_.toFixed(4));
 
   // Prepare rotation data
-  let data = {
+  const data = {
     rotX: rotX_,
     rotY: rotY_,
     rotZ: rotZ_
@@ -299,6 +329,18 @@ function sendRotation(rotX_, rotY_, rotZ_) {
   // Send rotation data to server
   socket.emit('rotation', data);
 	// socket.in('screen').emit('rotation', data);
+}
+
+function sendMode(mode_) {
+	// print mode to console
+	console.log('Sending: ' + mode_);
+
+	// prepare mode data
+	const data = {
+		mode: mode_
+	}
+
+	socket.emit('mode', data);
 }
 
 // Print rotation data to screen.

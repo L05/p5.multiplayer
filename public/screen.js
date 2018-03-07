@@ -15,6 +15,7 @@ function setup () {
 	socket.on('clientConnect', handleConnect);
 	socket.on('rotation', processRotation);
 	socket.on('trackPad', processTrackPad);
+	socket.on('mode', processMode);
 	socket.on('clientDisconnect', handleDisconnect);
 
 	game = new Game();
@@ -63,6 +64,11 @@ function processTrackPad (data) {
 			data.padX + ',' +
 			data.padY + '}');
 	}
+}
+
+function processMode (data) {
+	console.log(data.id + ' : {' +
+		data.mode + '}');
 }
 
 function handleConnect (data) {
