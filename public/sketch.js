@@ -20,31 +20,47 @@ const sendInterval 		= 100;					// in milliseconds
 let lastRotationSent;
 let lastTrackPadSent;
 
+let myFont;
+
 let socket;
 let isTouching				= false;
 let isRotating				= false;
+let isAttached				= true;
 let b_trackPad;
 let b_octoPad;
 let b_segTrackPad;
 let b_mode;
 let playerColor;
+let playerColorDim;
 let id = null;
 // let b_reset, 			// buttons
 let b_transmit;
+let p_deviceOrientation;
 
 ////////////////////////////////////////
 ////////////////////////////////////////
+
+// Preload
+function preload() {
+	myFont = loadFont('data/CONSOLA.TTF');
+}
 
 // Setup
 function setup() {
 	createCanvas(windowWidth, windowHeight);
 
+	textFont(myFont);
+
+
+	let hue = random(0, 360);
+
 	colorMode(HSB);
-	playerColor = color(random(0,360), 100, 100);
+	playerColor = color(hue, 100, 100);
+	playerColorDim = color(hue, 100, 75);
 	colorMode(RGB);
 
 	// background(51);
-	background(playerColor);
+	background(0);
 	textSize(16);
 
 	if (rotationMode) { rotation = new Rotation(); }
@@ -72,11 +88,20 @@ function setup() {
 				padDimensions[2]*windowWidth,
 				padDimensions[2]*windowWidth,
 				segResolution);
+			b_segTrackPad.fillOn					= color(16);
+			b_segTrackPad.fillOff					= color(16);
+			b_segTrackPad.fillFingerOn		= playerColor;
+			b_segTrackPad.fillFingerOff		= playerColorDim;
+			b_segTrackPad.fingerMode 			= SQUARE;
+			b_segTrackPad.fingerAlwaysOn	= true;
 			b_segTrackPad.setRound(25);
 			break;
 	}
 
-	b_mode = new ToggleButton(0.50*windowWidth, 0.125*windowHeight, 0.2*windowWidth, 0.2*windowWidth, 'X');
+	// b_mode = new ToggleButton(0.50*windowWidth, 0.125*windowHeight, 0.2*windowWidth, 0.2*windowWidth, 'X');
+	b_mode = new MomentaryButton(0.50*windowWidth, 0.125*windowHeight, 0.9*windowWidth, 0.2*windowWidth, 'gather');
+	b_mode.fillOn 	= playerColor;
+	b_mode.fillOff	= playerColorDim;
 	b_mode.setRound(0.075*windowWidth);
 
 	// b_transmit	= new ToggleButton(0.75*windowWidth, 0.10*windowHeight, 100, 50, 'transmit');
@@ -88,6 +113,17 @@ function setup() {
 	socket.on('id', function(data) {
 		id = data;
 		console.log("id: " + id);
+	});
+
+	socket.on('mode', function(data) {
+		isAttached = (data.mode == "true");
+		console.log("mode: " + isAttached);
+
+		if (isAttached) {
+			b_mode.setLabel("gather");
+		} else {
+			b_mode.setLabel("guide");
+		}
 	});
 
 	socket.emit('clientConnect', {
@@ -108,69 +144,98 @@ function setup() {
 	lastRotationSent = millis();
 }
 
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
 // Draw loop
 function draw() {
-	background(playerColor);
+	background(0);
 
-	// ROTATION (Accelerometer)
-	if (rotationMode) {
-		// Print the device's rotation values.
-		rotation.update();
+	if (deviceOrientation == 'portrait') {
+		// // ROTATION (Accelerometer)
+		// if (rotationMode) {
+		// 	// Print the device's rotation values.
+		// 	rotation.update();
+		//
+		// 	if (debug) { printRotation(); }
+		//
+		// 	// If device is not flat, send rotation data.
+		// 	if (!rotation.isFlat()) {
+		// 		if (millis() - lastRotationSent > sendInterval) {
+		// 			sendRotation(rotation.get().x, rotation.get().y, rotation.get().z);
+		// 			lastRotationSent = millis();
+		// 		}
+		//
+		// 		isRotating = true
+		// 		// background(100);
+		// 	}
+		// 	// Else if device is flat, send a zero and stop.
+		//
+		// 	else if (rotation.isFlat() && isRotating) {
+		// 		if (millis() - lastRotationSent > sendInterval) {
+		// 			sendRotation(0, 0, 0);
+		// 			lastRotationSent = millis();
+		// 			isRotating = false;
+		// 		}
+		// 	}
+		// 	// else { background(51); }
+		// }
 
-		if (debug) { printRotation(); }
+		switch (touchMode) {
+			case 0:
+				// TRACK PAD
+				if (b_trackPad.isTouched()) {
+					sendTrackPad(b_trackPad.out().x, b_trackPad.out().y);
+				}
 
-		// If device is not flat, send rotation data.
-		if (!rotation.isFlat()) {
-			if (millis() - lastRotationSent > sendInterval) {
-				sendRotation(rotation.get().x, rotation.get().y, rotation.get().z);
-				lastRotationSent = millis();
-			}
-
-			isRotating = true
-			// background(100);
+				push();
+					b_trackPad.display();
+				pop();
+				break;
+			case 1:
+				push();
+					b_octoPad.display();
+				pop();
+				break;
+			case 2:
+				push();
+					// Main one used.
+					b_segTrackPad.display();
+				pop();
+				break;
 		}
-		// Else if device is flat, send a zero and stop.
 
-		else if (rotation.isFlat() && isRotating) {
-			if (millis() - lastRotationSent > sendInterval) {
-				sendRotation(0, 0, 0);
-				lastRotationSent = millis();
-				isRotating = false;
-			}
+		push();
+			b_mode.display();
+		// 	// b_transmit.display();
+		// 	// b_reset.display();
+		pop();
+
+		if (isAttached) {
+			push();
+				stroke(200);
+				noFill();
+				ellipse(
+					padDimensions[0]*windowWidth,
+					padDimensions[1]*windowHeight,
+					padDimensions[2]*windowWidth*0.4
+					);
+			pop();
 		}
-		// else { background(51); }
+	} else {
+		fill(200);
+		textAlign(CENTER, CENTER);
+		text("Please hold your phone in portrait mode.", windowWidth*0.5, windowHeight*0.5);
 	}
 
-	switch (touchMode) {
-		case 0:
-			// TRACK PAD
-			if (b_trackPad.isTouched()) {
-				sendTrackPad(b_trackPad.out().x, b_trackPad.out().y);
-			}
 
-			push();
-				b_trackPad.display();
-			pop();
-			break;
-		case 1:
-			push();
-				b_octoPad.display();
-			pop();
-			break;
-		case 2:
-			push();
-				b_segTrackPad.display();
-			pop();
-			break;
-	}
-
-	push();
-		b_mode.display();
-	// 	// b_transmit.display();
-	// 	// b_reset.display();
-	pop();
 
 	textAlign(LEFT,BASELINE);
+
+	// console.log("deviceOrientation: " + deviceOrientation);
+
+	//// Old Debug Code
 
 	// push();
 	// 	fill(255);
@@ -221,7 +286,8 @@ function touchStarted() {
 	}
 
 	if (b_mode.checkTouched()) {
-		sendMode(b_mode.getState());
+		// sendModeToggle(b_mode.getState()); // Toggle
+		sendModeMomentary();
 	}
 
 	// b_transmit.checkTouched();
@@ -258,10 +324,11 @@ function touchEnded() {
 			break;
 	}
 
-	if (b_mode.checkTouched()) {
-		sendMode(b_mode.getState());
-	}
+	// if (b_mode.checkTouched()) {
+	// 	sendModeToggle(b_mode.getState()); // Toggle
+	// }
 
+	b_mode.checkTouched() // Momentary
 	// b_reset.checkTouched();
 	// b_transmit.checkTouched();
 }
@@ -284,6 +351,8 @@ function touchMoved() {
 			}
 			break;
 	}
+
+	b_mode.checkTouched() // Momentary
 
 	// if (b_reset.checkTouched()) {
 	// 	rotation.rotOffsetZ = rotationZ;
@@ -331,13 +400,25 @@ function sendRotation(rotX_, rotY_, rotZ_) {
 	// socket.in('screen').emit('rotation', data);
 }
 
-function sendMode(mode_) {
+function sendModeToggle(mode_) {
 	// print mode to console
 	console.log('Sending: ' + mode_);
 
 	// prepare mode data
 	const data = {
 		mode: mode_
+	}
+
+	socket.emit('mode', data);
+}
+
+function sendModeMomentary(_) {
+	// print mode to console
+	console.log('Sending mode pulse.');
+
+	// prepare mode data
+	const data = {
+		mode: 'pulse'
 	}
 
 	socket.emit('mode', data);

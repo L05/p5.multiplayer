@@ -4,6 +4,9 @@
 ////////////// TRACK PAD ///////////////
 ////////////////////////////////////////
 
+const CIRCLE = 0;
+const SQUARE = 1;
+
 class TrackPad {
 	constructor(x_, y_, width_, height_) {
 		this.x						= x_;
@@ -27,6 +30,13 @@ class TrackPad {
 
 		this.touched			= false;
 		this.threshold		= 0.0;
+	}
+
+	setDimensions(x_, y_, width_, height_) {
+		this.x						= x_;
+		this.y						= y_;
+		this.width				= width_;
+		this.height				= height_;
 	}
 
 	display() {
@@ -91,30 +101,39 @@ class TrackPad {
 
 class SegmentedTrackPad {
 	constructor(x_, y_, width_, height_, resolution_) {
+		this.x							= x_;
+		this.y							= y_;
+		this.width					= width_;
+		this.height					= height_;
+		this.divs						= 2*resolution_;
+
+		this.center					= createVector(x_, y_);
+		this.finger					= createVector(x_, y_);
+		this.fingerRadius		= 0.2*width_;
+		this.direction			= createVector(0, 0);
+		this.pdirection			= createVector(0, 0);
+
+		this.fillOff				= color(63, 63, 63, 255);
+		this.fillOn					= color(127, 127, 127, 255);
+		this.fillFingerOn		= color(255, 255);
+		this.fillFingerOff	= color(200, 255);
+		this.stroke					= color(0, 0, 0, 255);
+		this.strokeWeight 	= 4;
+		this.round 					= 0;
+
+		this.touched				= false;
+		this.changed				= false;
+		this.threshold			= 0.0;
+
+		this.fingerMode			= CIRCLE;
+		this.fingerAlwaysOn	= false;
+	}
+
+	setDimensions(x_, y_, width_, height_) {
 		this.x						= x_;
 		this.y						= y_;
 		this.width				= width_;
 		this.height				= height_;
-		this.divs					= 2*resolution_;
-
-		this.center				= createVector(x_, y_);
-		this.finger				= createVector(x_, y_);
-		this.fingerRadius	= 0.2*width_;
-		this.direction		= createVector(0, 0);
-		this.pdirection		= createVector(0, 0);
-
-		// this.deadZone			= 0;
-
-		this.fillOff			= color(63, 63, 63, 255);
-		this.fillOn				= color(127, 127, 127, 255);
-		this.fillFinger		= color(255, 255);
-		this.stroke				= color(0, 0, 0, 255);
-		this.strokeWeight = 4;
-		this.round 				= 0;
-
-		this.touched			= false;
-		this.changed			= false;
-		this.threshold		= 0.0;
 	}
 
 	display() {
@@ -143,16 +162,29 @@ class SegmentedTrackPad {
 			strokeWeight(this.strokeWeight);
 
 			// Draw finger guide
-			if (this.touched) {
+			if (this.touched || this.fingerAlwaysOn) {
 				noStroke();
-				fill(this.fillFinger);
-				ellipse(this.finger.x, this.finger.y, this.fingerRadius);
+				if (this.touched) {
+					fill(this.fillFingerOn);
+				} else {
+					fill(this.fillFingerOff);
+				}
+
+
+				if (this.fingerMode = CIRCLE) {
+					ellipse(this.finger.x, this.finger.y, this.fingerRadius);
+				} else if (this.fingerMode = SQUARE) {
+					rect(this.finger.x, this.finger.y, this.fingerRadius, this.fingerRadius);
+				}
 			}
+
 		pop();
 	}
 
 	checkTouched() {
 		this.touched	= false;
+		this.finger.x = this.center.x;
+		this.finger.y = this.center.y;
 
 		for (let i = 0; i < touches.length; i++) {
 			if (touches[i].x > this.x-this.width/2 && touches[i].x < this.x+this.width/2 &&
@@ -201,6 +233,14 @@ class SegmentedTrackPad {
 		this.fingerRadius = fingerRadius_;
 	}
 
+	setFingerMode(fingerMode_) {
+		this.fingerMode = fingerMode_;
+	}
+
+	setFingerAlwaysOn(fingerAlwaysOn_) {
+		this.fingerAlwaysOn = fingerAlwaysOn_;
+	}
+
 	setRound(round_) {
 		this.round = round_;
 	}
@@ -246,6 +286,13 @@ class OctoPad {
 		this.buttonCenters[5]	= [x_ - width_*(1/3), y_ + height_*(1/3)];
 		this.buttonCenters[6]	= [x_ - width_*(1/3), y_];
 		this.buttonCenters[7]	= [x_ - width_*(1/3), y_ - height_*(1/3)];
+	}
+
+	setDimensions(x_, y_, width_, height_) {
+		this.x						= x_;
+		this.y						= y_;
+		this.width				= width_;
+		this.height				= height_;
 	}
 
 	display() {
@@ -349,6 +396,13 @@ class MomentaryButton {
 		this.textSize			= 24;
 	}
 
+	setDimensions(x_, y_, width_, height_) {
+		this.x						= x_;
+		this.y						= y_;
+		this.width				= width_;
+		this.height				= height_;
+	}
+
 	display() {
 		push();
 			stroke(this.stroke);
@@ -374,7 +428,7 @@ class MomentaryButton {
 	checkTouched() {
 		this.touched = false;
 
-		for (i = 0; i < touches.length; i++) {
+		for (let i = 0; i < touches.length; i++) {
 			if (touches[i].x > this.x-this.width/2 && touches[i].x < this.x+this.width/2 &&
 				touches[i].y > this.y-this.height/2 && touches[i].y < this.y+this.height/2) {
 				this.touched = true;
@@ -413,6 +467,13 @@ class ToggleButton {
 		this.labelColor		= color(0, 0, 0, 255);
 		this.state				= false;
 		this.textSize			= 24;
+	}
+
+	setDimensions(x_, y_, width_, height_) {
+		this.x						= x_;
+		this.y						= y_;
+		this.width				= width_;
+		this.height				= height_;
 	}
 
 	display() {

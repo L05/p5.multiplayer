@@ -101,6 +101,14 @@ function newConnection(socket) {
 
 	function rerouteMode(data) {
 		io.sockets.in('screen').emit('mode', {id: socket.id, mode: data.mode});
+		console.log(socket.id + ": " + data.mode);
+	}
+
+	socket.on('echoMode', rerouteEchoMode);
+
+	function rerouteEchoMode(data) {
+		io.sockets.in(data.id).emit('mode', {mode: data.mode});
+		console.log("Sending mode echo {" + data.mode + "} to client " + data.id);
 	}
 
 }
