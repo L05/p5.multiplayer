@@ -9,7 +9,7 @@ let server = app.listen(port);
 
 app.use(express.static('public'));
 
-console.log("My socket server is running");
+console.log("My socket server is running on port " + port);
 
 // start socket.io
 let socket = require('socket.io');

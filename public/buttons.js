@@ -134,6 +134,10 @@ class SegmentedTrackPad {
 		this.y						= y_;
 		this.width				= width_;
 		this.height				= height_;
+		this.center.x			= x_;
+		this.center.y			= y_;
+		this.finger.x 		= x_;
+		this.finger.y 		= y_;
 	}
 
 	display() {
@@ -179,6 +183,8 @@ class SegmentedTrackPad {
 			}
 
 		pop();
+
+		// console.log("center: " + this.center);
 	}
 
 	checkTouched() {
