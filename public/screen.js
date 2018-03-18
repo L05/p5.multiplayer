@@ -1,8 +1,9 @@
 let velScale	= 0.25;
 let socket;
+let roomId = null;
 let game;
 let useRotation = false;
-
+debug = true;
 //
 
 function setup () {
@@ -12,6 +13,7 @@ function setup () {
 	socket = io.connect(serverIp + ':' + serverPort);
 	socket.emit('join', {name: 'screen'});
 
+	socket.on('roomId', receiveRoomId);
 	socket.on('clientConnect', handleConnect);
 	socket.on('rotation', processRotation);
 	socket.on('trackPad', processTrackPad);
@@ -23,11 +25,27 @@ function setup () {
 
 function draw () {
 	background(15);
+	if (roomId == null) {
+		push();
+			fill(200);
+			textSize(20);
+			textAlign(CENTER, CENTER);
+			text("Awaiting room ID...", windowWidth/2, windowHeight/2);
+		pop();
+		return;
+	}
+
 	game.printPlayerIds(5, 20);
 
 	for (id in game.players) {
 		game.players[id].debug = mouseIsPressed;
 	}
+
+	push();
+		fill(255);
+		textSize(20);
+		text("room ID: " + roomId, 10, height-30);
+	pop();
 
 	game.checkBounds();
 	drawSprites();
@@ -36,6 +54,13 @@ function draw () {
 
 
 // Socket event handlers
+function receiveRoomId (data) {
+	if (data.roomId != null) {
+		roomId = data.roomId;
+	} else {
+		console.log("No roomId received.");
+	}
+}
 
 function processRotation (data) {
 	velScale	= 0.25;

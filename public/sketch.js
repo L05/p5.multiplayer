@@ -30,7 +30,10 @@ let b_start;
 let playerColor;
 let playerColorDim;
 let id = null;
+let roomId = null;
 let playing = false;
+let waiting = true;
+let connected = false;
 let page = 0;
 
 let p_deviceOrientation = "portrait";
@@ -49,9 +52,9 @@ function preload() {
 // Setup
 function setup() {
 	createCanvas(windowWidth, windowHeight);
+	processUrl();
 
 	textFont(myFont);
-
 
 	let hue = random(0, 360);
 
@@ -64,6 +67,62 @@ function setup() {
 	background(0);
 	textSize(16);
 
+	setupUI();
+
+	// Socket.io
+		// Open a connection to the web server on port 3000
+		socket = io.connect(serverIp + ':' + serverPort);
+
+		socket.emit('join', {name: 'client', roomId: roomId});
+
+		socket.on('id', function(data) {
+			id = data;
+			console.log("id: " + id);
+		});
+
+		socket.on('found', function(data) {
+			connected = data.status;
+			waiting = false;
+			console.log("connected: " + connected);
+		})
+
+		socket.on('mode', function(data) {
+			isAttached = (data.mode == "true");
+			console.log("mode: " + isAttached);
+
+			if (isAttached) {
+				b_mode.setLabel("gather");
+			} else {
+				b_mode.setLabel("guide");
+			}
+		});
+
+		// socket.emit('clientConnect', {
+		// 	 r: red(playerColor)/255,
+		// 	 g: green(playerColor)/255,
+		// 	 b: blue(playerColor)/255
+		//  	});
+}
+
+function processUrl()
+  {
+    const parameters = location.search.substring(1).split("&");
+
+    const temp = parameters[0].split("=");
+    roomId = unescape(temp[1]);
+
+		console.log("id: " + roomId);
+    // temp = parameters[1].split("=");
+    // p = unescape(temp[1]);
+    // document.getElementById("log").innerHTML = l;
+    // document.getElementById("pass").innerHTML = p;
+  }
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+function setupUI() {
 	// Create buttons
 	b_segTrackPad = new SegmentedTrackPad(
 		padDimensionsP[0]*windowWidth,
@@ -101,36 +160,6 @@ function setup() {
 	b_start.strokeWeight = 2;
 	b_start.stroke				= color(127);
 	b_start.setRound(25);
-
-	// Socket.io
-		// Open a connection to the web server on port 3000
-		socket = io.connect(serverIp + ':' + serverPort);
-		socket.emit('join', {name: 'client'});
-		socket.on('id', function(data) {
-			id = data;
-			console.log("id: " + id);
-		});
-
-		socket.on('mode', function(data) {
-			isAttached = (data.mode == "true");
-			console.log("mode: " + isAttached);
-
-			if (isAttached) {
-				b_mode.setLabel("gather");
-			} else {
-				b_mode.setLabel("guide");
-			}
-		});
-
-		// socket.emit('clientConnect', {
-		// 	 r: red(playerColor)/255,
-		// 	 g: green(playerColor)/255,
-		// 	 b: blue(playerColor)/255
-		//  	});
-}
-
-function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
 }
 
 ////////////
@@ -138,13 +167,35 @@ function windowResized() {
 function draw() {
 	background(0);
 
-	if (playing) {
-		// Check to see if orientation has changed.
-		if (p_deviceOrientation != deviceOrientation) {
-			orientationChanged();
-			p_deviceOrientation = deviceOrientation;
-		}
+	// If no connection is detected, print error message.
+	if (waiting) {
+		push();
+			fill(200);
+			textAlign(CENTER, CENTER);
+			textSize(20);
+			text("Attempting connection...", width/2, height/2-10);
+			// text("bottom of the game screen.", width/2, height/2+10);
+		pop();
+		return;
+	} else if (!connected) {
+		push();
+			fill(200);
+			textAlign(CENTER, CENTER);
+			textSize(20);
+			text("Please enter the link at the", width/2, height/2-10);
+			text("bottom of the game screen.", width/2, height/2+10);
+		pop();
+		return;
+	}
 
+	// Check to see if orientation has changed.
+	if (p_deviceOrientation != deviceOrientation) {
+		orientationChanged();
+		p_deviceOrientation = deviceOrientation;
+	}
+
+	// If playing...
+	if (playing && deviceOrientation == "portrait") {
 		push();
 			// Main one used.
 			b_segTrackPad.display();
@@ -169,7 +220,7 @@ function draw() {
 					);
 			pop();
 		}
-	} else if (page == 0) {
+	} else if (page == 0 && deviceOrientation == "portrait") {
 		push();
 			let w = windowWidth;
 			let h = windowWidth*1.15;
@@ -184,7 +235,7 @@ function draw() {
 			textAlign(CENTER, CENTER);
 			b_start.display();
 		pop();
-	} else {
+	} else if (deviceOrientation == "portrait") {
 		push();
 		let w = windowWidth;
 		let h = windowWidth*1.15;
@@ -199,10 +250,19 @@ function draw() {
 			textAlign(CENTER, CENTER);
 			b_start.display();
 		pop();
+	} else {
+		push();
+			fill(200);
+			textAlign(CENTER, CENTER);
+			textSize(20);
+			text("Please use your device in portrait", width/2, height/2-10);
+			text("mode. Landscape not yet supported.", width/2, height/2+10);
+		pop();
 	}
 
 	textAlign(LEFT,BASELINE);
 }
+
 
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -238,6 +298,8 @@ function orientationChanged() {
 }
 
 function touchStarted() {
+	if (!connected) { return;	}
+
 	isTouching = true;
 
 	if (b_segTrackPad.checkTouched()) {
@@ -256,15 +318,18 @@ function touchStarted() {
 		} else {
 			playing = true;
 			socket.emit('clientConnect', {
-				 r: red(playerColor)/255,
-				 g: green(playerColor)/255,
-				 b: blue(playerColor)/255
+				 	roomId: roomId,
+				 	r: red(playerColor)/255,
+				 	g: green(playerColor)/255,
+				 	b: blue(playerColor)/255
 			 	});
 		}
 	}
 }
 
 function touchEnded() {
+	if (!connected) { return;	}
+
 	isTouching = false;
 
 	if (b_segTrackPad.checkTouched()) {
@@ -282,6 +347,7 @@ function touchEnded() {
 }
 
 function touchMoved() {
+	if (!connected) { return;	}
 
 	b_segTrackPad.checkTouched();
 	if (b_segTrackPad.checkChanged()) {
@@ -304,6 +370,7 @@ function sendTrackPad(padX_, padY_) {
 
   // Prepare rotation data
   const data = {
+		roomId: roomId,
     padX: padX_,
     padY: padY_
   }
@@ -322,6 +389,7 @@ function sendRotation(rotX_, rotY_, rotZ_) {
 
   // Prepare rotation data
   const data = {
+		roomId: roomId,
     rotX: rotX_,
     rotY: rotY_,
     rotZ: rotZ_
@@ -338,6 +406,7 @@ function sendModeToggle(mode_) {
 
 	// prepare mode data
 	const data = {
+		roomId: roomId,
 		mode: mode_
 	}
 
@@ -350,6 +419,7 @@ function sendModeMomentary(_) {
 
 	// prepare mode data
 	const data = {
+		roomId: roomId,
 		mode: 'pulse'
 	}
 
