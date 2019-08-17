@@ -3,7 +3,7 @@
 
 // const serverIp			= 'http://spacedander-server.herokuapp.com';	  // Server IP address
 // const serverIp      = 'http://L05.play.ai';	  // Server IP address
-const serverIp      = 'http://10.0.1.16';  // Server IP address
+const serverIp      = 'http://127.0.0.1';  // Server IP address
 // const serverPort		= '80';                 // Server port
 const serverPort		= '3000';                 // Server port
 const segResolution = 2;                      // segTrackPad resolution
