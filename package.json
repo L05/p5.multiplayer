@@ -1,16 +1,19 @@
 {
-  "name": "sockets_accelerometer",
+  "name": "p5_sockets",
   "version": "1.0.0",
-  "description": "sockets example",
-  "main": "server.js",
+  "description": "p5.js sockets example",
+  "main": "simpleServer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node simpleServer.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.4",
     "socket.io": "^2.0.3"
+  },
+  "engines": {
+    "node": "10.x"  
   }
 }
