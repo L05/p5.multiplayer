@@ -220,3 +220,9 @@ function sendData(data) {
   // Send rotation data to server
   socket.emit('reroute', data);
 }
+
+/// Add these lines below sketch to prevent scrolling on mobile
+function touchMoved() {
+  // do some stuff
+  return false;
+}
