@@ -2,7 +2,7 @@
   "name": "sockets_accelerometer",
   "version": "1.0.0",
   "description": "sockets example",
-  "main": "server.js",
+  "main": "simpleServer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
