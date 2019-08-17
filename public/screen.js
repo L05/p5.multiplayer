@@ -1,4 +1,5 @@
-let serverIp      = '127.0.0.1';  // Server IP address
+let serverIp      = 'https://p5cc-play.herokuapp.com';  // Server IP address
+//let serverIp      = '127.0.0.1';  // Server IP address
 let serverPort    = '3000';                 // Server port
 
 let velScale	= 10;

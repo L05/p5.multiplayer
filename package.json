@@ -2,10 +2,10 @@
   "name": "p5_sockets",
   "version": "1.0.0",
   "description": "p5.js sockets example",
-  "main": "simpleServer.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node simpleServer.js"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
