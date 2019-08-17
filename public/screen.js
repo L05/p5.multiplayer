@@ -1,6 +1,6 @@
-let serverIp      = 'https://p5cc-play.herokuapp.com';  // Server IP address
+let serverIp      = 'https://p5cc-server.herokuapp.com';  // Server IP address
 //let serverIp      = '127.0.0.1';  // Server IP address
-let serverPort    = '3000';                 // Server port
+let serverPort    = '29354';                 // Server port
 
 let velScale	= 10;
 let socket;
@@ -14,7 +14,7 @@ function setup () {
   createCanvas(windowWidth, windowHeight);
   background(51);
 
-  socket = io.connect(serverIp + ':' + serverPort);
+  socket = io.connect(serverIp/* + ':' + serverPort*/);
   socket.emit('join', {name: 'screen'});
 
   socket.on('roomId', receiveRoomId);

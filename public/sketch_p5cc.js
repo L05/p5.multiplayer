@@ -14,7 +14,7 @@ Run http-server -c-1 -p80 to start server on open port 80.
 // Initialize variables
 
 const sendInterval  = 100;					// in milliseconds
-const serverIp      = 'http://127.0.0.1';  // Server IP address
+const serverIp      = 'https://p5cc-server.herokuapp.com';  // Server IP address
 const serverPort    = '3000';                 // Server port
 
 let socket;
@@ -65,7 +65,7 @@ function setup() {
 
   // Socket.io
   // Open a connection to the web server on port 3000
-  socket = io.connect(serverIp + ':' + serverPort);
+  socket = io.connect(serverIp/* + ':' + serverPort*/);
 
   socket.emit('join', {name: 'client', roomId: roomId});
 

@@ -188,7 +188,7 @@ function newConnection(socket) {
 
     let packet = {...data};
     packet.id = socket.id;
-    console.log(packet);
+//    console.log(packet);
 
     if (client != null) {
       io.sockets.in(data.roomId).emit('reroute', packet);
