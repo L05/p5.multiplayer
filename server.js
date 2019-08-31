@@ -1,82 +1,46 @@
+// Create arrays for tracking hosts and clients
+let hosts   = [];
 let clients = [];
-let screens  = [];
 
-const roomNames =
-   ["agate",
-    "amber",
-    "amethyst",
-    "barite",
-    "beryl",
-    "bloodstone",
-    "coral",
-    "crystal",
-    "diamond",
-    "emerald",
-    "fluorite",
-    "garnet",
-    "goldstone",
-    "jade",
-    "jasper",
-    "moonstone",
-    "onyx",
-    "opal",
-    "pearl",
-    "peridot",
-    "quahog",
-    "quartz",
-    "ruby",
-    "sapphire",
-    "sardonyx",
-    "sunstone",
-    "tigereye",
-    "topaz",
-    "turquoise",
-    "zircon"]
-
-let roomIds = randomNoRepeats(roomNames);
-
-console.log(roomIds().id);
-
-
-// setup express web server and listen on port 3000
+// Setup express web server and listen on port 3000
 let express = require('express');
 let app = express();
 let port=Number(process.env.PORT || 3000);
 let server = app.listen(port);
 
 app.use(express.static('public'));
-
 console.log("My socket server is running on port " + port);
 
-// start socket.io
+// Start socket.io
 let socket = require('socket.io');
 
-// connect it to the web server
+// Connect it to the web server
 let io = socket(server);
 
-// setup a connection event
+// Setup a connection event
 io.sockets.on('connection', newConnection);
-
 function newConnection(socket) {
 
   console.log('\n' + socket.id + ' is attempting connection...');
   socket.emit('id', socket.id);
 
-  // Add a client if it requests to join.
+  // Process a request to join.
   socket.on('join', function (data) {
 
+    // If request is from a client...
     if (data.name == 'client') {
-      // Add all clients to "client" room.
-      console.log("verifying client...");
-
+      
+      console.log("Verifying client...");
 
       // If the roomId field is not null
       if (data.roomId != null) {
-        console.log("searching for existing roomId...");
+        
         // Search all existing roomIds for a match
+        console.log("Searching for existing room ID...");
+        
         let found = false;
-        for (let i = 0; i < screens.length; i++) {
-          if(screens[i].roomId == data.roomId) {
+        for (let i = 0; i < hosts.length; i++) {
+          if(hosts[i].roomId == data.roomId) {
             socket.join(data.name);
 
             let clientData = {
@@ -84,13 +48,13 @@ function newConnection(socket) {
               roomId: data.roomId
             }
 
-            // add client socket id to clients list
+            // Add client socket ID and room ID to clients list
             clients.push(clientData);
 
-            // add client to its own room and to screen room
+            // Add client to its own room and to host by room ID
             socket.join(socket.id);
             socket.join(data.roomId);
-            console.log('client added to room '+data.roomId+'.\tnumber of clients: ' + clients.length);
+            console.log('Client added to room '+data.roomId+'.\tNumber of clients: ' + clients.length);
             found = true;
 
             // Send match confirmation back to client
@@ -104,94 +68,76 @@ function newConnection(socket) {
           socket.emit("found", {status: false});
         }
       }
-    } else if (data.name == 'screen') {
-      // generate screen roomId
-      let screenData = {
+    } else if (data.name == 'host') {
+      // If the attempted connection is from a host, store the data
+      let hostData = {
         id: socket.id,
-//        roomId: makeIdFromList()
-        roomId: "p5cc"
+        roomId: data.roomId
       }
 
-      // add screen socket id to screens list
-      screens.push(screenData);
+      // Add host socket ID and room ID to hosts list
+      hosts.push(hostData);
 
-      // Add screen to its own room with roomId and to "screen" room.
+      // TODO: Check for valid room ID. If not valid, create random room ID.
+
+      // Add host to "host" room and to its own room by room ID.
       socket.join(data.name);
-      socket.join(screenData.roomId);
+      socket.join(hostData.roomId);
 
-      // Send roomId back to screen
-      socket.emit("roomId", screenData);
+      // Send room ID back to host
+      socket.emit("hostConnect", hostData);
 
-      console.log('screen added with id ' + screenData.roomId + '.\tnumber of screens: ' + screens.length);
+      console.log('Host added with room ID of ' + hostData.roomId + '.\tNumber of hosts: ' + hosts.length);
     } else {
       console.log('warning: data type not recognized.')
     }
-
   })
 
   // Handle client disconnects.
   socket.on('disconnect', function () {
     console.log('\n' + socket.id + ' has been disconnected!');
-    io.sockets.in('screen').emit('clientDisconnect', {id: socket.id});
 
-    let client = searchId(socket.id, clients);
-    if (client != null) {
-      clients.splice(client.index, 1);
-      console.log('client removed. number of clients: ' + clients.length);
+    let endpoint = searchId(socket.id, clients);
+    if (endpoint != null) {
+      clients.splice(endpoint.index, 1);
+      console.log('Client removed.\tNumber of clients: ' + clients.length);
+
+      // Notify hosts that client has disconnected.
+      io.sockets.in('host').emit('clientDisconnect', {id: socket.id});
     } else {
-      client = searchId(socket.id, screens);
+      endpoint = searchId(socket.id, hosts);
 
-      if (client != null) {
-        console.log('screen with id ' + screens[client.index].roomId + ' removed.\tnumber of screens: ' + screens.length);
-        screens.splice(client.index, 1);
-
+      if (endpoint != null) {
+        console.log('Host with ID ' + hosts[endpoint.index].roomId + ' removed.\tHumber of hosts: ' + hosts.length);
+        hosts.splice(endpoint.index, 1);
       }
     }
-
-    // if (clients.includes(socket.id)) {
-    //   // If client, remove from clients array.
-    //   let i = clients.indexOf(socket.id);
-    //   clients.splice(i, 1);
-    //   console.log('client removed. number of clients: ' + clients.length);
-    // } else if (screens.includes(socket.id)) {
-    //   // If screen, remove the screens array.
-    //   for (let i = 0; i < screens.length; i++) {
-    //     if (socket.id == screens[i].id) {
-    //       i = screens.indexOf(socket.id);
-    //       screens.splice(i, 1);
-    //       console.log('screen removed.\tnumber of screens: ' + screens.length);
-    //     }
-    //   }
-    // }
   })
 
   // Handle client connects.
-  socket.on('clientConnect', rerouteConnect);
+  socket.on('clientConnect', onClientConnect);
 
-  function rerouteConnect(data) {
-    // send it back out
-    // socket.broadcast.emit('mouse', data); // does not include the client that sent the message
-    // io.sockets.emit('mouse', data); // would include client that sent the message
+  function onClientConnect(data) {
+    // Get host by room ID
+    let host = searchRoomId(data.roomId, hosts);
 
-    let client = searchRoomId(data.roomId, clients);
-
-    if (client != null) {
-      console.log('clientConnect message received from ' + socket.id + ' with color: (' + data.r + ', ' + data.g + ', ' + data.b + ')');
+    if (host != null) {
+      console.log('clientConnect message received from ' + socket.id + ' for room ' + data.roomId + ".");
       io.sockets.in(data.roomId).emit('clientConnect', {id: socket.id, roomId: data.roomId, r: data.r, g: data.g, b: data.b});
     }
   }
   
-  socket.on('reroute', rerouteData);
+  // Reroute data sent from client to host
+  socket.on('sendData', sendData);
 
-  function rerouteData(data) {
-    let client = searchRoomId(data.roomId, clients);
+  function sendData(data) {
+    let host = searchRoomId(data.roomId, hosts);
 
     let packet = {...data};
     packet.id = socket.id;
-//    console.log(packet);
 
-    if (client != null) {
-      io.sockets.in(data.roomId).emit('reroute', packet);
+    if (host != null) {
+      io.sockets.in(data.roomId).emit('receiveData', packet);
     }
   }
 }
@@ -244,11 +190,11 @@ function randomNoRepeats(array) {
 function makeIdFromList() {
   for (let i = 0; i < roomNames.length; i++) {
     let text = roomIds().id;
-    let room = searchRoomId(text, screens);
+    let room = searchRoomId(text, hosts);
     if (room == null) {
       return text;
     }
   }
-  console.log(screens.length + " screens detected. No names available.");
+  console.log(hosts.length + " hosts detected. No names available.");
   return null;
 }

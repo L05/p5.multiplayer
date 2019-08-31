@@ -1,4 +1,4 @@
-//let socket = null;
+let socketOsc = null;
 let isConnected = false;
 
 function sendOsc(address, value) {
@@ -8,21 +8,21 @@ function sendOsc(address, value) {
     } else if (typeof value === 'object') {
       console.error('Cannot send JavaScript objects via OSC.');
     }
-    socket.emit('message', [address].concat(value));
+    socketOsc.emit('message', [address].concat(value));
   }
 }
 
 function setupOsc(oscPortIn, oscPortOut, bridgeIp, serverIp='127.0.0.1', clientIp='127.0.0.1') {
   try {
-    socket = io.connect(bridgeIp, { port: 8085, rememberTransport: false });
-    socket.on('connect', function() {
-      socket.emit('config', {	
+    socketOsc = io.connect(bridgeIp, { port: 8085, rememberTransport: false });
+    socketOsc.on('connect', function() {
+      socketOsc.emit('config', {	
         server: { port: oscPortIn,  host: serverIp },
         client: { port: oscPortOut, host: clientIp }
       });
       isConnected = true;
     });
-    socket.on('message', function(msg) {
+    socketOsc.on('message', function(msg) {
       if (msg[0] == '#bundle') {
         for (var i=2; i<msg.length; i++) {
           receiveOsc(msg[i][0], msg[i].splice(1));

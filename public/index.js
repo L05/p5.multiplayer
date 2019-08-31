@@ -14,8 +14,12 @@ Run http-server -c-1 -p80 to start server on open port 80.
 // Initialize variables
 
 const sendInterval  = 100;					// in milliseconds
-const serverIp      = 'https://p5cc-play.herokuapp.com';  // Server IP address
-const serverPort    = '3000';                 // Server port
+// Socket Network Settings
+// const serverIp      = 'https://p5cc-play.herokuapp.com';
+// const serverIp      = '192.168.1.131';
+// const serverPort    = '3000';                 // Server port
+const serverIp      = '127.0.0.1';
+const serverPort    = '3000';
 
 let socket;
 let isTouching	= false;
@@ -38,34 +42,21 @@ let connected = false;
 ////////////////////////////////////////
 ////////////////////////////////////////
 
-// Preload
-function preload() {
-}
 
+////////////
 // Setup
 function setup() {
   createCanvas(windowWidth, windowHeight);
   processUrl();
   
   gui = createGui();
-//  gui.loadStyle("TerminalGreen");
 
-  let hue = random(0, 360);
-
-  colorMode(HSB);
-  playerColor = color(hue, 100, 100);
-  playerColorDim = color(hue, 100, 75);
-  colorMode(RGB);
-
-  // background(51);
-  background(0);
-  textSize(16);
-
+  setPlayerColors();
   setupUI();
 
-  // Socket.io
-  // Open a connection to the web server on port 3000
-  socket = io.connect(serverIp/* + ':' + serverPort*/);
+  // Socket.io - open a connection to the web server on specified port
+  // socket = io.connect(serverIp);
+  socket = io.connect(serverIp + ':' + serverPort);
 
   socket.emit('join', {name: 'client', roomId: roomId});
 
@@ -99,6 +90,47 @@ function processUrl() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+////////////
+// Draw loop
+function draw() {
+  background(0);
+
+  // If no connection is detected, print error message.
+  if (waiting) {
+    push();
+      fill(200);
+      textAlign(CENTER, CENTER);
+      textSize(20);
+      text("Attempting connection...", width/2, height/2-10);
+      // text("bottom of the game screen.", width/2, height/2+10);
+    pop();
+    return;
+  } 
+  else if (!connected) {
+    push();
+      fill(200);
+      textAlign(CENTER, CENTER);
+      textSize(20);
+      text("Please enter the link at the", width/2, height/2-10);
+      text("bottom of the game screen.", width/2, height/2+10);
+    pop();
+    return;
+  }
+  else {
+    drawGui();
+  }
+}
+
+////////////
+// GUI setup
+function setPlayerColors() {
+  let hue = random(0, 360);
+  colorMode(HSB);
+  playerColor = color(hue, 100, 100);
+  playerColorDim = color(hue, 100, 75);
+  colorMode(RGB);
 }
 
 function setupUI() {
@@ -143,48 +175,21 @@ function setupUI() {
     strokeHandleHover:  color(255),
     strokeHandleActive: color(255)
   });
-  joystick.onChange = joystickOnChange;
+  joystick.onChange = onJoystickChange;
   
   button = createButton("Interact", bX, bY, bW, bH);
-  button.style.textSize = 40;
-  button.style.fillBg = playerColorDim;
-  button.style.fillBgHover = playerColorDim;
-  button.style.fillBgActive = playerColor;
-  button.onChange = buttonOnChange;
+  button.setStyle({
+    textSize: 40,
+    fillBg: playerColorDim,
+    fillBgHover: playerColorDim,
+    fillBgActive: playerColor
+  });
+  button.onChange = onButtonChange;
 }
 
 ////////////
-// Draw loop
-function draw() {
-  background(0);
-
-  // If no connection is detected, print error message.
-  if (waiting) {
-    push();
-      fill(200);
-      textAlign(CENTER, CENTER);
-      textSize(20);
-      text("Attempting connection...", width/2, height/2-10);
-      // text("bottom of the game screen.", width/2, height/2+10);
-    pop();
-    return;
-  } 
-  else if (!connected) {
-    push();
-      fill(200);
-      textAlign(CENTER, CENTER);
-      textSize(20);
-      text("Please enter the link at the", width/2, height/2-10);
-      text("bottom of the game screen.", width/2, height/2+10);
-    pop();
-    return;
-  }
-  else {
-    drawGui();
-  }
-}
-
-function joystickOnChange() {  
+// Input processing
+function onJoystickChange() {  
   thisJ.x = floor(joystick.val.x*divs)/divs;
   thisJ.y = floor(joystick.val.y*divs)/divs;
   
@@ -200,7 +205,7 @@ function joystickOnChange() {
   prevJ.y = thisJ.y;
 }
 
-function buttonOnChange() {
+function onButtonChange() {
   let data = {
     button: button.val
   }
@@ -208,9 +213,8 @@ function buttonOnChange() {
   sendData(data);
 }
 
-////////////////////////////////////////
-////////////////////////////////////////
-
+////////////
+// Send data to server
 function sendData(data) {
   // print rotation data to console
   console.log('Sending: ' + data);
@@ -218,8 +222,11 @@ function sendData(data) {
   data.roomId = roomId;
   
   // Send rotation data to server
-  socket.emit('reroute', data);
+  socket.emit('sendData', data);
 }
+
+////////////////////////////////////////
+////////////////////////////////////////
 
 /// Add these lines below sketch to prevent scrolling on mobile
 function touchMoved() {
