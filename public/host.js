@@ -129,13 +129,13 @@ function onClientDisconnect (data) {
 }
 
 function onReceiveData (data) {
-  if ("joystickX" in data) {
+  if (data.type === 'joystick') {
     processJoystick(data);
   }
-  else if ("button" in data) {
+  else if (data.type === 'button') {
     processButton(data);
   }
-  else if ("r" in data) {
+  else if (data.type === 'playerColor') {
     game.setColor(data.id, data.r*255, data.g*255, data.b*255);
   }
 }

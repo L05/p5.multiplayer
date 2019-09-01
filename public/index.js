@@ -78,6 +78,7 @@ function setup() {
   });
 
   sendData({
+    type: 'playerColor', 
     r: red(playerColor)/255,
     g: green(playerColor)/255,
     b: blue(playerColor)/255
@@ -207,6 +208,7 @@ function onJoystickChange() {
   
   if (thisJ.x != prevJ.x || thisJ.y != prevJ.y) {
     let data = {
+      type: 'joystick', 
       joystickX: thisJ.x,
       joystickY: thisJ.y
     }
@@ -219,6 +221,7 @@ function onJoystickChange() {
 
 function onButtonChange() {
   let data = {
+    type: 'button', 
     button: button.val
   }
   
