@@ -12,19 +12,19 @@ Run http-server -c-1 -p80 to start server on open port 80.
 
 */
 
+////////////
 // Socket Network Settings
-// const serverIp      = 'https://p5cc-play.herokuapp.com';
-// const serverIp      = '192.168.1.131';
+// const serverIp      = 'https://yourservername.herokuapp.com';
 const serverIp      = '127.0.0.1'
 const serverPort    = '3000';
 let socket;
-let hostConnected = false;
+let hostConnected   = false;
+let roomId          = null;
 
 // Game settings
 const velScale	= 10;
 const debug = true;
 let game;
-let roomId = null;
 
 ////////////////////////////////////////
 ////////////////////////////////////////

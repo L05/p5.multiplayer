@@ -13,33 +13,30 @@ Run http-server -c-1 -p80 to start server on open port 80.
 
 */
 
-// Initialize variables
-
-const sendInterval  = 100;					// in milliseconds
+////////////
 // Socket Network Settings
-// const serverIp      = 'https://p5cc-play.herokuapp.com';
-// const serverIp      = '192.168.1.131';
-// const serverPort    = '3000';                 // Server port
+// const serverIp      = 'https://yourservername.herokuapp.com';
 const serverIp      = '127.0.0.1';
 const serverPort    = '3000';
-
 let socket;
-let isTouching	= false;
-let isAttached	= true;
 
-let gui         = null;
-let joystick    = null;
-let thisJ       = {x: 0, y: 0};
-let prevJ       = {x: 0, y: 0};
-let divs        = 4;
-let button      = null;
-
-let playerColor;
-let playerColorDim;
-let id = null;
+// Initialize Network related variables
 let roomId = null;
 let waiting = true;
 let connected = false;
+let id = null;
+
+// Initialize GUI related variables
+let gui         = null;
+let button      = null;
+let joystick    = null;
+let joystickRes = 4;
+let thisJ       = {x: 0, y: 0};
+let prevJ       = {x: 0, y: 0};
+
+// Initialize Game related variables
+let playerColor;
+let playerColorDim;
 
 ////////////////////////////////////////
 ////////////////////////////////////////
@@ -57,7 +54,7 @@ function setup() {
   setupUI();
 
   // Socket.io - open a connection to the web server on specified port
-  // socket = io.connect(serverIp);
+  // socket = io.connect(serverIp); // Use this one for Heroku
   socket = io.connect(serverIp + ':' + serverPort);
 
   socket.emit('join', {name: 'client', roomId: roomId});
@@ -202,8 +199,8 @@ function setupUI() {
 ////////////
 // Input processing
 function onJoystickChange() {  
-  thisJ.x = floor(joystick.val.x*divs)/divs;
-  thisJ.y = floor(joystick.val.y*divs)/divs;
+  thisJ.x = floor(joystick.val.x*joystickRes)/joystickRes;
+  thisJ.y = floor(joystick.val.y*joystickRes)/joystickRes;
   
   if (thisJ.x != prevJ.x || thisJ.y != prevJ.y) {
     let data = {
