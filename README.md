@@ -38,6 +38,10 @@ This repository contains a set of template files for building a multi-device, mu
 
 4. In your `host.js` and `index.js` files, set `const local = false` as you will be running these using a remote server. Then change `const serverIp = 'https://yourservername.herokuapp.com';` to match your Heroku server address.
 
-5. Commit your changes to your cloned GitHub repository. In the terminal, run the command `git add -a -m "Updating for Heroku deployment"`.
+5. Commit these updates. In the terminal, run the command `git add -a -m "Updating for Heroku deployment"`.
 
-6. 
+6. Next, in the terminal run the command `git push heroku master`. This will push your code to the remote Heroku server.
+
+7. Open a browser window and go to `https://yourservername.herokuapp.com/host.html`, replacing `yourservername` with the server name you selected in step 4. You should see a "host" screen with *# players* in the top left of the window and a URL displayed in the bottom left corner. Make note of this URL.
+
+8. In a second browser window, go to the aforementioned URL. You should see a "client" screen displaying a simple controller that lets you control a colored square in your "host" screen.
