@@ -6,7 +6,7 @@ This repository contains a set of template files for building a multi-device, mu
 
 ## Getting Started
 
-1. Install this GitHub repo on your local machine.
+1. Clone this GitHub repo on your local machine.
 
 2. If you don't already have *node.js* installed on your machine, go [here](https://nodejs.org/en/download/) and download the version appropriate for your operating system.
 
@@ -25,3 +25,19 @@ This repository contains a set of template files for building a multi-device, mu
 9. Open a second browser and go to the URL displayed on your host page. It will look something like `http://127.0.0.1:8080/index.html?=roomId`, where `roomId` is a randomly generated name. This screen will load a controller that let's you control the movement of a colored square on the host page.
 
 10. You can specify your own room ID by opening a host page using `http://127.0.0.1:8080/host.html?=roomId`, where `roomId` is a string of your choice.
+
+## Deploying to Heroku
+
+1. Make sure to first follow at least steps 1 through 4 in [Getting Started](#getting-started).
+
+2. Create a free [Heroku](https://heroku.com) account if you don't already have one.
+
+3. Open a terminal window and navigate to the project directory.
+
+4. Create a Heroku app by running the command `heroku create yourservername`, replacing `yourservername` with a server name of your choice.
+
+4. In your `host.js` and `index.js` files, set `const local = false` as you will be running these using a remote server. Then change `const serverIp = 'https://yourservername.herokuapp.com';` to match your Heroku server address.
+
+5. Commit your changes to your cloned GitHub repository. In the terminal, run the command `git add -a -m "Updating for Heroku deployment"`.
+
+6. 

@@ -15,8 +15,11 @@ Run http-server -c-1 -p80 to start server on open port 80.
 ////////////
 // Socket Network Settings
 // const serverIp      = 'https://yourservername.herokuapp.com';
-const serverIp      = '127.0.0.1'
+// const serverIp      = '127.0.0.1'
+const serverIp      = 'https://p5cc-play.herokuapp.com'
 const serverPort    = '3000';
+const local         = false;  // true if running locally, false
+                              // if running on remote server
 let socket;
 let hostConnected   = false;
 let roomId          = null;
@@ -35,8 +38,10 @@ function setup () {
   createCanvas(windowWidth, windowHeight);
   processUrl();
 
-  // socket = io.connect(serverIp);
-  socket = io.connect(serverIp + ':' + serverPort);
+  let addr = serverIp;
+  if (local) { addr = serverIp + ':' + serverPort; }
+  socket = io.connect(addr);
+
   socket.emit('join', {name: 'host', roomId: roomId});
 
   socket.on('hostConnect', onHostConnect);
