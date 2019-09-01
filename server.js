@@ -2,6 +2,7 @@
 let hosts   = [];
 let clients = [];
 
+////////////
 // Setup express web server and listen on port 3000
 let express = require('express');
 let app = express();
@@ -11,20 +12,22 @@ let server = app.listen(port);
 app.use(express.static('public'));
 console.log("My socket server is running on port " + port);
 
+////////////
 // Start socket.io
 let socket = require('socket.io');
 
 // Connect it to the web server
 let io = socket(server);
 
-// Setup a connection event
+////////////
+// Setup a connection
 io.sockets.on('connection', newConnection);
 function newConnection(socket) {
 
   console.log('\n' + socket.id + ' is attempting connection...');
   socket.emit('id', socket.id);
 
-  // Process a request to join.
+  //// Process a request to join.
   socket.on('join', function (data) {
 
     // If request is from a client...
@@ -102,7 +105,7 @@ function newConnection(socket) {
     }
   })
 
-  // Handle client disconnects.
+  //// Process client disconnects.
   socket.on('disconnect', function () {
     console.log('\n' + socket.id + ' has been disconnected!');
 
@@ -123,7 +126,7 @@ function newConnection(socket) {
     }
   })
 
-  // Handle client connects.
+  //// Process client connects.
   socket.on('clientConnect', onClientConnect);
 
   function onClientConnect(data) {
@@ -136,7 +139,7 @@ function newConnection(socket) {
     }
   }
   
-  // Reroute data sent from client to host
+  //// Reroute data sent from client to host
   socket.on('sendData', sendData);
 
   function sendData(data) {
@@ -151,6 +154,7 @@ function newConnection(socket) {
   }
 }
 
+////////////
 // Utility Functions
 function searchId(id_, array_) {
   for (let i = 0; i < array_.length; i++) {
@@ -174,7 +178,8 @@ function searchRoomId(roomId_, array_) {
   }
 }
 
-// Semi-random room ID generator
+////////////
+// Gemstone room ID generator
 const roomNames =
    ["agate",
     "amber",

@@ -1,3 +1,17 @@
+/*
+Author:	L05
+Date:	2019.08.31
+
+This 'host' sketch is intended to be run in desktop browsers. 
+It connects to a node server via socket.io, from which it receives
+rerouted input data from all connected 'clients'.
+
+Navigate to the project's 'public' directory.
+Run http-server -c-1 to start server. This will default to port 8080.
+Run http-server -c-1 -p80 to start server on open port 80.
+
+*/
+
 // Socket Network Settings
 // const serverIp      = 'https://p5cc-play.herokuapp.com';
 // const serverIp      = '192.168.1.131';
@@ -12,6 +26,11 @@ const debug = true;
 let game;
 let roomId = null;
 
+////////////////////////////////////////
+////////////////////////////////////////
+
+////////////
+// Setup
 function setup () {
   createCanvas(windowWidth, windowHeight);
   processUrl();
@@ -21,24 +40,33 @@ function setup () {
   socket.emit('join', {name: 'host', roomId: roomId});
 
   socket.on('hostConnect', onHostConnect);
-  socket.on('clientConnect', handleConnect);
-  socket.on('clientDisconnect', handleDisconnect);
-  socket.on('receiveData', receiveData);  
+  socket.on('clientConnect', onClientConnect);
+  socket.on('clientDisconnect', onClientDisconnect);
+  socket.on('receiveData', onReceiveData);  
   
   game = new Game(width, height);
 }
 
+////////////
+// Process URL
+// Used to process the room ID. In order to specify a room ID,
+// include ?=uniqueName, where uniqueName is replaced with the 
+// desired unique room ID.
 function processUrl() {
   const parameters = location.search.substring(1).split("&");
 
   const temp = parameters[0].split("=");
   roomId = unescape(temp[1]);
-  
+
   console.log("id: " + roomId);
 }
 
+////////////
+// Draw loop
 function draw () {
   background(15);
+
+  // Display message if host is not yet connected
   if (!hostConnected) {
     push();
       fill(200);
@@ -49,21 +77,25 @@ function draw () {
     return;
   }
 
+  // Display player IDs in top left corner
   game.printPlayerIds(5, 20);
 
+  // Display server address in bottom right corner
   push();
     fill(255);
     textSize(50);
-    // text("room ID: " + roomId, 10, height-30);
     text(serverIp+"/?="+roomId, 10, height-50);
   pop();
 
+  // Check game bounds and draw sprites
   game.checkBounds();
   drawSprites();
-  printFps();
+
+  // Display framerate
+  displayFps();
 }
 
-
+////////////
 // Socket event handlers
 function onHostConnect (data) {
   console.log("Host connected to server.");
@@ -74,7 +106,25 @@ function onHostConnect (data) {
   }
 }
 
-function receiveData (data) {
+function onClientConnect (data) {
+  console.log(data.id + ' has connected.');
+
+  if (!game.checkId(data.id)) {
+    game.add(data.id,
+            random(0.25*width, 0.75*width),
+            random(0.25*height, 0.75*height),
+            60, 60
+    );
+  }
+}
+
+function onClientDisconnect (data) {
+  if (game.checkId(data.id)) {
+    game.remove(data.id);
+  }
+}
+
+function onReceiveData (data) {
   if ("joystickX" in data) {
     processJoystick(data);
   }
@@ -84,9 +134,19 @@ function receiveData (data) {
   else if ("r" in data) {
     game.setColor(data.id, data.r*255, data.g*255, data.b*255);
   }
-  // console.log(data);
 }
 
+////////////
+// Display framerate
+function displayFps () {
+  push();
+    fill(255);
+    text(int(frameRate()), width - 50, 20);
+  pop();
+}
+
+////////////
+// Input processing
 function processJoystick (data) {
   
   game.setVelocity(data.id, data.joystickX*velScale, -data.joystickY*velScale);
@@ -107,35 +167,9 @@ function processButton (data) {
   }
 }
 
-// Connection handlers
-function handleConnect (data) {
-  console.log(data.id + ' has connected.');
-
-  if (!game.checkId(data.id)) {
-    game.add(data.id,
-            random(0.25*width, 0.75*width),
-            random(0.25*height, 0.75*height),
-            60, 60
-    );
-  }
-}
-
-function handleDisconnect (data) {
-  if (game.checkId(data.id)) {
-    game.remove(data.id);
-  }
-}
-
-//
-function printFps () {
-  push();
-    fill(255);
-    text(int(frameRate()), width - 50, 20);
-  pop();
-}
-
-
+////////////
 // Game
+// This simple placeholder game makes use of p5.play
 class Game {
   constructor (w, h) {
     this.w          = w;
@@ -198,7 +232,6 @@ class Game {
   }
 
   setVelocity(id, velx, vely) {
-      // console.log(id + ": " + velx + ", " + vely);
       this.players[id].velocity.x = velx;
       this.players[id].velocity.y = vely;
   }

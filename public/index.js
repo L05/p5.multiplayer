@@ -1,11 +1,13 @@
 /*
 Author:	L05
-Date:	2019.08.17
+Date:	2019.08.31
 
-This sketch is intended to be run on mobile.
-It sends the a basic joystick and button output to a node server
-via socket.io.
+This 'client' sketch is intended to be run in either mobile or 
+desktop browsers. It sends a basic joystick and button input data 
+to a node server via socket.io. This data is then rerouted to a 
+'host' sketch, which displays all connected 'clients'.
 
+Navigate to the project's 'public' directory.
 Run http-server -c-1 to start server. This will default to port 8080.
 Run http-server -c-1 -p80 to start server on open port 80.
 
@@ -82,6 +84,11 @@ function setup() {
   });
 } 
 
+////////////
+// Process URL
+// Used to process the room ID. In order to specify a room ID,
+// include ?=uniqueName, where uniqueName is replaced with the 
+// desired unique room ID.
 function processUrl() {
   const parameters = location.search.substring(1).split("&");
 
