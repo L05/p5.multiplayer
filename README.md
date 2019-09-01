@@ -10,6 +10,8 @@ This repository contains a set of template files for building a multi-device, mu
 
 ![An example image of the base project in action. It shows a host window on the left side of a screen populated by two colored squares, each matching client controller windows on the right side of the screen.](data/example.png)
 
+If you'd like to see an example video of this template in action, [check this out](https://vimeo.com/274410221).
+
 ## Getting Started
 [[Back to top]](#sockets_p5js)
 
