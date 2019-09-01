@@ -95,7 +95,7 @@ If you'd like to start with a completely blank template, however, please navigat
 #### What is Glitch?
 [[Back to top]](#p5multiplayer)
 
-[Glitch](https://glitch.com) is a relatively easy-to-use platform for creating web apps that let's users easily share, reuse, and repurpose code. You can use the service to create a dedicated URL for your game server instead of hosting it locally on your own machine. This will enable users to connect to a set URL from any device's browser as long as the device is connected to the internet, regardless of whether via ethernet, Wi-Fi, LTE, etc.
+[Glitch](https://glitch.com) is an approachable platform for creating web apps that let's users easily share, reuse, and repurpose code. You can use the service to create a dedicated URL for your game server instead of hosting it locally on your own machine. This will enable users to connect to a set URL from any device's browser as long as the device is connected to the internet, regardless of whether via ethernet, Wi-Fi, LTE, etc.
 
 **Pros:**
 * Can be accessed from any internet connected device.
