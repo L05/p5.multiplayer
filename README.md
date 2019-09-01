@@ -2,10 +2,16 @@
 
 This repository contains a set of template files for building a multi-device, multiplayer game where multiple clients can connect to a specified host page. The clients and hosts are built using *[p5.js](https://p5js.org)*, and they communicate with each other through a *[node.js](https://nodejs.org/en/download/)* server via *[socket.io](https://socket.io/)* messages.
 
+* [Getting Started](#getting-started)
+* [Using the Template Files](#using-the-template-files)
+* [Deploying to Heroku](#deploying-to-heroku)
+    * [What is Heroku?](#what-is-heroku)
+    * [Instructions](#instructions)
 
 ![An example image of the base project in action. It shows a host window on the left side of a screen populated by two colored squares, each matching client controller windows on the right side of the screen.](data/example.png)
 
 ## Getting Started
+[[Back to top]](#sockets_p5js)
 
 1. Clone this GitHub repo on your local machine.
 
@@ -28,6 +34,7 @@ This repository contains a set of template files for building a multi-device, mu
 10. (OPTIONAL) The included *node.js* server cleverly lets you specify a custom room ID (think of it as a semi-private game room). You can specify your own room ID by opening a host page using `http://127.0.0.1:8080/host.html?=roomId`, where `roomId` is a string of your choice.
 
 ## Using the Template Files
+[[Back to top]](#sockets_p5js)
 
 The `host.js`, `host.html`, `index.js`, and `index.html` files located within the `public` directory are a basic game example and should have everything you need to start building your own browser-based game. However, if you'd like to start with a completely blank template, please navigate to the `template` directory.
 
@@ -36,6 +43,7 @@ You'll see comments indicating where to add your game logic and other related co
 ## Deploying to Heroku
 
 ### What is Heroku?
+[[Back to top]](#sockets_p5js)
 
 [Heroku](https://heroku.com) is a cloud platform as a service that you can use to host your server instead of hosting it locally on your own machine. This will enable users to connect to a set URL from any device's browser as long as the device is connected to the internet, regardless of whether via ethernet, Wi-Fi, LTE, etc.
 
@@ -45,11 +53,12 @@ You'll see comments indicating where to add your game logic and other related co
 * Free as long as you're within the platform [limits](https://devcenter.heroku.com/articles/limits).
 
 **Cons:**
-* Not as fast as a local connection (i.e. wireless router).
+* Not as fast as a local connection (i.e. your own computer, wireless router, etc.).
 * You must create a Heroku account.
 * A little bit extra setup (but hopefully the below steps make that easier!).
 
 ### Instructions
+[[Back to top]](#sockets_p5js)
 
 1. Make sure to first follow at least steps 1 through 4 in [Getting Started](#getting-started).
 
