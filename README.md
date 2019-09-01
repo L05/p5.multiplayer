@@ -1,5 +1,7 @@
 # Sockets_p5js
 
+This contains a set of template files for building a multi-player interactive system where multiple clients can connect to a host page by way of a *node.js* server. The clients and hosts are built using *[p5.js](https://p5js.org)*, and *[socket.io](https://socket.io/)* is used to facilitate communication between them.
+
 ## Getting Started
 
 1. Install this GitHub repo on your local machine.
