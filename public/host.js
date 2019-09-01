@@ -15,10 +15,9 @@ Run http-server -c-1 -p80 to start server on open port 80.
 ////////////
 // Socket Network Settings
 // const serverIp      = 'https://yourservername.herokuapp.com';
-// const serverIp      = '127.0.0.1';
-const serverIp      = 'https://p5cc-play.herokuapp.com';
+const serverIp      = '127.0.0.1';
 const serverPort    = '3000';
-const local         = false;  // true if running locally, false
+const local         = true;   // true if running locally, false
                               // if running on remote server
 let socket;
 let hostConnected   = false;
@@ -72,29 +71,17 @@ function draw () {
   background(15);
 
   // Display message if host is not yet connected
-  if (!hostConnected) {
-    push();
-      fill(200);
-      textSize(20);
-      textAlign(CENTER, CENTER);
-      text("Awaiting connection...", windowWidth/2, windowHeight/2);
-      pop();
-    return;
-  }
+  displayConnectStatus();
 
   // Display player IDs in top left corner
   game.printPlayerIds(5, 20);
 
-  // Display server address in bottom right corner
-  push();
-    fill(255);
-    textSize(50);
-    text(serverIp+"/?="+roomId, 10, height-50);
-  pop();
-
   // Check game bounds and draw sprites
   game.checkBounds();
   drawSprites();
+
+  // Display server address in bottom left corner
+  displayAddress();
 
   // Display framerate
   displayFps();
@@ -142,7 +129,31 @@ function onReceiveData (data) {
 }
 
 ////////////
-// Display framerate
+// HUD Displays
+
+// Displays connection status
+function displayConnectStatus() {
+  if (!hostConnected) {
+    push();
+      fill(200);
+      textSize(20);
+      textAlign(CENTER, CENTER);
+      text("Awaiting connection...", windowWidth/2, windowHeight/2);
+      pop();
+    return;
+  }
+}
+
+// Displays server address in lower left of screen
+function displayAddress() {
+  push();
+    fill(255);
+    textSize(50);
+    text(serverIp+"/?="+roomId, 10, height-50);
+  pop();
+}
+
+// Displays framerate
 function displayFps () {
   push();
     fill(255);
