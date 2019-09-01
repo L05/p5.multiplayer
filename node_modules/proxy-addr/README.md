@@ -1,8 +1,8 @@
 # proxy-addr
 
-[![NPM Version][npm-image]][npm-url]
-[![NPM Downloads][downloads-image]][downloads-url]
-[![Node.js Version][node-version-image]][node-version-url]
+[![NPM Version][npm-version-image]][npm-url]
+[![NPM Downloads][npm-downloads-image]][npm-url]
+[![Node.js Version][node-image]][node-url]
 [![Build Status][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 
@@ -20,6 +20,8 @@ $ npm install proxy-addr
 
 ## API
 
+<!-- eslint-disable no-unused-vars -->
+
 ```js
 var proxyaddr = require('proxy-addr')
 ```
@@ -32,14 +34,18 @@ The `trust` argument is a function that returns `true` if you trust
 the address, `false` if you don't. The closest untrusted address is
 returned.
 
+<!-- eslint-disable no-undef -->
+
 ```js
-proxyaddr(req, function(addr){ return addr === '127.0.0.1' })
-proxyaddr(req, function(addr, i){ return i < 1 })
+proxyaddr(req, function (addr) { return addr === '127.0.0.1' })
+proxyaddr(req, function (addr, i) { return i < 1 })
 ```
 
 The `trust` arugment may also be a single IP address string or an
 array of trusted addresses, as plain IP addresses, CIDR-formatted
 strings, or IP/netmask strings.
+
+<!-- eslint-disable no-undef -->
 
 ```js
 proxyaddr(req, '127.0.0.1')
@@ -49,6 +55,8 @@ proxyaddr(req, ['127.0.0.0/255.0.0.0', '192.168.0.0/255.255.0.0'])
 
 This module also supports IPv6. Your IPv6 addresses will be normalized
 automatically (i.e. `fe80::00ed:1` equals `fe80:0:0:0:0:0:ed:1`).
+
+<!-- eslint-disable no-undef -->
 
 ```js
 proxyaddr(req, '::1')
@@ -61,6 +69,8 @@ not have to specify both `::ffff:a00:1` and `10.0.0.1`.
 
 As a convenience, this module also takes certain pre-defined names
 in addition to IP addresses, which expand into IP addresses:
+
+<!-- eslint-disable no-undef -->
 
 ```js
 proxyaddr(req, 'loopback')
@@ -86,12 +96,16 @@ Return all the addresses of the request, optionally stopping at the
 first untrusted. This array is ordered from closest to furthest
 (i.e. `arr[0] === req.connection.remoteAddress`).
 
+<!-- eslint-disable no-undef -->
+
 ```js
 proxyaddr.all(req)
 ```
 
 The optional `trust` argument takes the same arguments as `trust`
 does in `proxyaddr(req, trust)`.
+
+<!-- eslint-disable no-undef -->
 
 ```js
 proxyaddr.all(req, 'loopback')
@@ -103,9 +117,11 @@ Compiles argument `val` into a `trust` function. This function takes
 the same arguments as `trust` does in `proxyaddr(req, trust)` and
 returns a function suitable for `proxyaddr(req, trust)`.
 
+<!-- eslint-disable no-undef, no-unused-vars -->
+
 ```js
-var trust = proxyaddr.compile('localhost')
-var addr  = proxyaddr(req, trust)
+var trust = proxyaddr.compile('loopback')
+var addr = proxyaddr(req, trust)
 ```
 
 This function is meant to be optimized for use against every request.
@@ -128,13 +144,12 @@ $ npm run-script bench
 
 [MIT](LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/proxy-addr.svg
-[npm-url]: https://npmjs.org/package/proxy-addr
-[node-version-image]: https://img.shields.io/node/v/proxy-addr.svg
-[node-version-url]: https://nodejs.org/en/download/
-[travis-image]: https://img.shields.io/travis/jshttp/proxy-addr/master.svg
-[travis-url]: https://travis-ci.org/jshttp/proxy-addr
-[coveralls-image]: https://img.shields.io/coveralls/jshttp/proxy-addr/master.svg
+[coveralls-image]: https://badgen.net/coveralls/c/github/jshttp/proxy-addr/master
 [coveralls-url]: https://coveralls.io/r/jshttp/proxy-addr?branch=master
-[downloads-image]: https://img.shields.io/npm/dm/proxy-addr.svg
-[downloads-url]: https://npmjs.org/package/proxy-addr
+[node-image]: https://badgen.net/npm/node/proxy-addr
+[node-url]: https://nodejs.org/en/download
+[npm-downloads-image]: https://badgen.net/npm/dm/proxy-addr
+[npm-url]: https://npmjs.org/package/proxy-addr
+[npm-version-image]: https://badgen.net/npm/v/proxy-addr
+[travis-image]: https://badgen.net/travis/jshttp/proxy-addr/master
+[travis-url]: https://travis-ci.org/jshttp/proxy-addr
