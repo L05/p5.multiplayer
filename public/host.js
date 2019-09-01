@@ -178,7 +178,6 @@ class Game {
     this.numPlayers	= 0;
     this.id         = 0;
     this.colliders	= new Group();
-    
   }
 
   add (id, x, y, w, h) {
