@@ -17,7 +17,7 @@ This repository contains a set of template files for building a multi-device, mu
 If you'd like to see an example video of this template in action, [check this out](https://vimeo.com/274410221).
 
 ## Getting Started
-[[Back to top]](#sockets_p5js)
+[[Back to top]](#p5multiplayer)
 
 1. Clone this GitHub repo on your local machine.
 
@@ -40,7 +40,7 @@ If you'd like to see an example video of this template in action, [check this ou
 10. (OPTIONAL) The included *node.js* server cleverly lets you specify a custom room ID (think of it as a semi-private game room). You can specify your own room ID by opening a host page using `http://127.0.0.1:8080/host.html?=roomId`, where `roomId` is a string of your choice.
 
 ## Using the Template Files
-[[Back to top]](#sockets_p5js)
+[[Back to top]](#p5multiplayer)
 
 The `host.js`, `host.html`, `index.js`, and `index.html` files located within the `public` directory are a basic game example and should have everything you need to start building your own browser-based game.
 
@@ -53,12 +53,12 @@ If you'd like to start with a completely blank template, however, please navigat
 ### Using with Glitch
 
 #### What is Glitch?
-[[Back to top]](#sockets_p5js)
+[[Back to top]](#p5multiplayer)
 
 [Glitch](https://glitch.com) is a relatively easy-to-use platform for creating web apps that let's users easily share, reuse, and repurpose code. You can use the service to create a dedicated URL for your game server instead of hosting it locally on your own machine. This will enable users to connect to a set URL from any device's browser as long as the device is connected to the internet, regardless of whether via ethernet, Wi-Fi, LTE, etc.
 
 #### Glitch Installation
-[[Back to top]](#sockets_p5js)
+[[Back to top]](#p5multiplayer)
 
 1. Create a free [Glitch](https://glitch.com) account if you don't already have one.
 
@@ -79,7 +79,7 @@ If you'd like to start with a completely blank template, however, please navigat
 ### Using with Heroku
 
 #### What is Heroku?
-[[Back to top]](#sockets_p5js)
+[[Back to top]](#p5multiplayer)
 
 [Heroku](https://heroku.com) is a cloud platform as a service that you can use to create a dedicated URL for your game server instead of hosting it locally on your own machine. This will enable users to connect to a set URL from any device's browser as long as the device is connected to the internet, regardless of whether via ethernet, Wi-Fi, LTE, etc.
 
@@ -94,7 +94,7 @@ If you'd like to start with a completely blank template, however, please navigat
 * A little bit extra setup (but hopefully the below steps make that easier!).
 
 #### Heroku Installation
-[[Back to top]](#sockets_p5js)
+[[Back to top]](#p5multiplayer)
 
 1. Make sure to first follow at least steps 1 through 4 in [Getting Started](#getting-started).
 
