@@ -1,6 +1,6 @@
 # Sockets_p5js
 
-This contains a set of template files for building a multi-player interactive system where multiple clients can connect to a host page by way of a *node.js* server. The clients and hosts are built using *[p5.js](https://p5js.org)*, and *[socket.io](https://socket.io/)* is used to facilitate communication between them.
+This repository contains a set of template files for building a multi-device, multiplayer game where multiple clients can connect to a specified host page. The clients and hosts are built using *[p5.js](https://p5js.org)*, and they communicate with each other through a *node.js* server via *[socket.io](https://socket.io/)* messages.
 
 ![An example image of the base project in action. It shows a host window on the left side of a screen populated by two colored squares, each matching client controller windows on the right side of the screen.](data/example.png)
 
