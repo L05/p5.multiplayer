@@ -10,9 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-osc": "4.1.0",
-    "express": "^4.15.4",
-    "socket.io": "^2.0.3"
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
   },
   "engines": {
     "node": "10.x"
