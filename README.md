@@ -57,6 +57,18 @@ If you'd like to start with a completely blank template, however, please navigat
 
 [Glitch](https://glitch.com) is a relatively easy-to-use platform for creating web apps that let's users easily share, reuse, and repurpose code. You can use the service to create a dedicated URL for your game server instead of hosting it locally on your own machine. This will enable users to connect to a set URL from any device's browser as long as the device is connected to the internet, regardless of whether via ethernet, Wi-Fi, LTE, etc.
 
+**Pros:**
+* Can be accessed from any internet connected device.
+* Dedicated URL for your own server.
+* Free as long as you're within the platform [restrictions](https://glitch.com/help/restrictions/).
+
+**Cons:**
+* Not as fast as a local connection (i.e. your own computer, wireless router, etc.).
+* Project are put to sleep after a relatively short period of time (see platform [restrictions](https://glitch.com/help/restrictions/)).
+* Projects are subject to a connection limit per hour (see platform [restrictions](https://glitch.com/help/restrictions/)).
+* You must create a Glitch account.
+* A little bit extra setup (but hopefully the below steps make that easier!).
+
 #### Glitch Installation
 [[Back to top]](#p5multiplayer)
 
@@ -91,6 +103,8 @@ If you'd like to start with a completely blank template, however, please navigat
 **Cons:**
 * Not as fast as a local connection (i.e. your own computer, wireless router, etc.).
 * You must create a Heroku account.
+* Project are put to sleep after a period of time (see platform [limits](https://devcenter.heroku.com/articles/limits)).
+* Projects are subject to a connection limit per hour (see platform [limits](https://devcenter.heroku.com/articles/limits)).
 * A little bit extra setup (but hopefully the below steps make that easier!).
 
 #### Heroku Installation
