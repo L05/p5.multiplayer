@@ -33,11 +33,7 @@ function processUrl() {
 
   const temp = parameters[0].split("=");
   roomId = unescape(temp[1]);
-
-  if (roomId === "undefined") {
-    roomId = "L05";
-  }
-
+  
   console.log("id: " + roomId);
 }
 
@@ -72,6 +68,10 @@ function draw () {
 function onHostConnect (data) {
   console.log("Host connected to server.");
   hostConnected = true;
+  
+  if (roomId === null || roomId === 'undefined') {
+    roomId = data.roomId;
+  }
 }
 
 function receiveData (data) {
@@ -80,6 +80,9 @@ function receiveData (data) {
   }
   else if ("button" in data) {
     processButton(data);
+  }
+  else if ("r" in data) {
+    game.setColor(data.id, data.r*255, data.g*255, data.b*255);
   }
   // console.log(data);
 }
@@ -110,19 +113,15 @@ function handleConnect (data) {
 
   if (!game.checkId(data.id)) {
     game.add(data.id,
-			random(0.25*width, 0.75*width),
-			random(0.25*height, 0.75*height),
-			60, 60,
-			data.r*255,
-			data.g*255,
-			data.b*255
+            random(0.25*width, 0.75*width),
+            random(0.25*height, 0.75*height),
+            60, 60
     );
   }
 }
 
 function handleDisconnect (data) {
   if (game.checkId(data.id)) {
-    // sendOsc("/"+game.players[data.id].id+"/active", 0);
     game.remove(data.id);
   }
 }
@@ -148,41 +147,47 @@ class Game {
     
   }
 
-  add (id_, x_, y_, w_, h_, r_, g_, b_) {
-    this.players[id_] = createSprite(x_, y_, w_, h_);
-    this.players[id_].id = "p"+this.id;
-    this.players[id_].color = color(r_, g_, b_);
-    this.players[id_].shapeColor = color(r_, g_, b_);
-    this.players[id_].setCollider("rectangle", 0, 0, w_, h_);
-    this.players[id_].scale = 1;
-    this.players[id_].mass = 1;
-    this.colliders.add(this.players[id_]);
+  add (id, x, y, w, h) {
+    this.players[id] = createSprite(x, y, w, h);
+    this.players[id].id = "p"+this.id;
+    this.players[id].setCollider("rectangle", 0, 0, w, h);
+    this.players[id].color = color(255, 255, 255);
+    this.players[id].shapeColor = color(255, 255, 255);
+    this.players[id].scale = 1;
+    this.players[id].mass = 1;
+    this.colliders.add(this.players[id]);
+    print(this.players[id].id + " added.");
     this.id++;
     this.numPlayers++;
   }
 
-  remove (id_) {
-      this.colliders.remove(this.players[id_]);
-      this.players[id_].remove();
-      delete this.players[id_];
+  setColor (id, r, g, b) {
+    this.players[id].color = color(r, g, b);
+    this.players[id].shapeColor = color(r, g, b);
+
+    print(this.players[id].id + " color added.");
+  }
+
+  remove (id) {
+      this.colliders.remove(this.players[id]);
+      this.players[id].remove();
+      delete this.players[id];
       this.numPlayers--;
   }
 
-  checkId (id_) {
-      if (id_ in this.players) { return true; }
+  checkId (id) {
+      if (id in this.players) { return true; }
       else { return false; }
   }
 
-  printPlayerIds (x_, y_) {
-      let x = x_;
-
+  printPlayerIds (x, y) {
       push();
           noStroke();
           fill(255);
           textSize(16);
-          text("# players: " + this.numPlayers, x, y_);
+          text("# players: " + this.numPlayers, x, y);
 
-          let y = y_ + 16;
+          y = y + 16;
           fill(200);
           for (let id in this.players) {
               text(this.players[id].id, x, y);
@@ -192,10 +197,10 @@ class Game {
       pop();
   }
 
-  setVelocity(id_, velx_, vely_) {
-      // console.log(id_ + ": " + velx_ + ", " + vely_);
-      this.players[id_].velocity.x = velx_;
-      this.players[id_].velocity.y = vely_;
+  setVelocity(id, velx, vely) {
+      // console.log(id + ": " + velx + ", " + vely);
+      this.players[id].velocity.x = velx;
+      this.players[id].velocity.y = vely;
   }
 
   checkBounds() {

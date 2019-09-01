@@ -72,7 +72,10 @@ function setup() {
   })
   
   socket.emit('clientConnect', {
-    roomId: roomId,
+    roomId: roomId
+  });
+
+  sendData({
     r: red(playerColor)/255,
     g: green(playerColor)/255,
     b: blue(playerColor)/255
@@ -134,9 +137,10 @@ function setPlayerColors() {
 }
 
 function setupUI() {
-  // Create buttons
+  // Temp variables for calculating GUI object positions
   let jX, jY, jW, jH, bX, bY, bW, bH;
   
+  // Rudimentary calculation based on portrait or landscape 
   if (width < height) {
     jX = 0.05*width;
     jY = 0.05*height;
@@ -160,6 +164,7 @@ function setupUI() {
     bH = 0.9*windowHeight;
   }
   
+  // Create joystick and button, stylize with player colors
   joystick = createJoystick("Joystick", jX, jY, jW, jH);
   joystick.setStyle({
     handleRadius:     joystick.w*0.2, 

@@ -70,9 +70,18 @@ function newConnection(socket) {
       }
     } else if (data.name == 'host') {
       // If the attempted connection is from a host, store the data
+      let roomId = null;
+
+      if (data.roomId === null || data.roomId === 'undefined') {
+        roomId = makeIdFromList();
+      }
+      else {
+        roomId = data.roomId;
+      }
+
       let hostData = {
         id: socket.id,
-        roomId: data.roomId
+        roomId: roomId
       }
 
       // Add host socket ID and room ID to hosts list
@@ -123,7 +132,7 @@ function newConnection(socket) {
 
     if (host != null) {
       console.log('clientConnect message received from ' + socket.id + ' for room ' + data.roomId + ".");
-      io.sockets.in(data.roomId).emit('clientConnect', {id: socket.id, roomId: data.roomId, r: data.r, g: data.g, b: data.b});
+      io.sockets.in(data.roomId).emit('clientConnect', {id: socket.id, roomId: data.roomId});
     }
   }
   
@@ -165,16 +174,40 @@ function searchRoomId(roomId_, array_) {
   }
 }
 
-function makeId() {
-  let text = "";
-  // let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+// Semi-random room ID generator
+const roomNames =
+   ["agate",
+    "amber",
+    "amethyst",
+    "barite",
+    "beryl",
+    "bloodstone",
+    "coral",
+    "crystal",
+    "diamond",
+    "emerald",
+    "fluorite",
+    "garnet",
+    "goldstone",
+    "jade",
+    "jasper",
+    "moonstone",
+    "onyx",
+    "opal",
+    "pearl",
+    "peridot",
+    "quahog",
+    "quartz",
+    "ruby",
+    "sapphire",
+    "sardonyx",
+    "sunstone",
+    "tigereye",
+    "topaz",
+    "turquoise",
+    "zircon"]
 
-  for (let i = 0; i < 5; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-  return text;
-}
+const roomIds = randomNoRepeats(roomNames);
 
 function randomNoRepeats(array) {
   let copy = array.slice(0);
