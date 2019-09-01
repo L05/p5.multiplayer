@@ -1,6 +1,6 @@
 # Sockets_p5js
 
-This repository contains a set of template files for building a multi-device, multiplayer game where multiple clients can connect to a specified host page. The clients and hosts are built using *[p5.js](https://p5js.org)*, and they communicate with each other through a *node.js* server via *[socket.io](https://socket.io/)* messages.
+This repository contains a set of template files for building a multi-device, multiplayer game where multiple clients can connect to a specified host page. The clients and hosts are built using *[p5.js](https://p5js.org)*, and they communicate with each other through a *[node.js](https://nodejs.org/en/download/)* server via *[socket.io](https://socket.io/)* messages.
 
 ![An example image of the base project in action. It shows a host window on the left side of a screen populated by two colored squares, each matching client controller windows on the right side of the screen.](data/example.png)
 
@@ -28,6 +28,22 @@ This repository contains a set of template files for building a multi-device, mu
 
 ## Deploying to Heroku
 
+### What is Heroku?
+
+[Heroku](https://heroku.com) is a cloud platform as a service that you can use to host your server instead of hosting it locally on your own machine. This will enable users to connect to a set URL from any device's browser as long as the device is connected to the internet, regardless of whether via ethernet, Wi-Fi, LTE, etc.
+
+**Pros:**
+* Can be accessed from any internet connected device.
+* Dedicated, persistent URL for your own server.
+* Free as long as you're within the platform [limits](https://devcenter.heroku.com/articles/limits).
+
+**Cons:**
+* Not as fast as a local connection (i.e. wireless router).
+* You must create a Heroku account.
+* A little bit extra setup (but hopefully the below steps make that easier!).
+
+### Instructions
+
 1. Make sure to first follow at least steps 1 through 4 in [Getting Started](#getting-started).
 
 2. Create a free [Heroku](https://heroku.com) account if you don't already have one.
@@ -45,3 +61,4 @@ This repository contains a set of template files for building a multi-device, mu
 7. Open a browser window and go to `https://yourservername.herokuapp.com/host.html`, replacing `yourservername` with the server name you selected in step 4. You should see a "host" screen with *# players* in the top left of the window and a URL displayed in the bottom left corner. Make note of this URL.
 
 8. In a second browser window, go to the aforementioned URL. You should see a "client" screen displaying a simple controller that lets you control a colored square in your "host" screen.
+
