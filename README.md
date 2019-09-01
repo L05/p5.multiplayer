@@ -3,6 +3,10 @@
 This repository contains a set of template files for building a multi-device, multiplayer game where multiple clients can connect to a specified host page. The clients and hosts are built using *[p5.js](https://p5js.org)*, and they communicate with each other through a *[node.js](https://nodejs.org/en/download/)* server via *[socket.io](https://socket.io/)* messages.
 
 * [Getting Started](#getting-started)
+* [How does it work?](#how-does-it-work)
+    * [Local](#local)
+    * [Local Area Network (LAN)](#local-area-network-lan)
+    * [Remote Server](#remote-server)
 * [Using the Template Files](#using-the-template-files)
 * [Using p5.multiplayer with a Remote Server](#using-p5multiplayer-with-a-remote-server)
     * [Using with Glitch](#using-with-glitch)
@@ -38,6 +42,42 @@ If you'd like to see an example video of this template in action, [check this ou
 9. Open a second browser and go to the URL displayed on your host page. It will look something like `http://127.0.0.1:8080/index.html?=roomId`, where `roomId` is a randomly generated name. This screen will load a controller that let's you control the movement of a colored square on the host page.
 
 10. (OPTIONAL) The included *node.js* server cleverly lets you specify a custom room ID (think of it as a semi-private game room). You can specify your own room ID by opening a host page using `http://127.0.0.1:8080/host.html?=roomId`, where `roomId` is a string of your choice.
+
+## How does it work?
+[[Back to top]](#p5multiplayer)
+
+*p5.multiplayer* functions by using a *node.js* server to relay data messages between a "host" and any "clients" that connect to it. The messages are sent using socket.io as the messaging protocol.
+
+*p5.multiplayer* can be used in three possible configurations:
+
+#### Localhost (Same computer)
+[[Back to top]](#p5multiplayer)
+
+This type of configuration works great for testing. You can run your *node.js* server on your local machine and test the "host" and "client" pages in separate browswer windows.
+
+<center><img src="data/p5.multiplayer_localhost.png" alt="Diagram of p5.multiplayer running solely on a local computer." width="600"></center>
+
+#### Local Area Network (LAN)
+[[Back to top]](#p5multiplayer)
+
+You can set up a multiplayer game or interactive installation on a local area network (LAN) that will enable multiple devices to connect to your machine. You'll need to know your machine's IP address and use that as your `serverIp` in order for this to work (how to find your IP address on [MacOS](https://www.macworld.co.uk/how-to/mac/ip-address-3676112/) / [Windows](https://support.microsoft.com/en-us/help/4026518/windows-10-find-your-ip-address)).
+
+In your `host.js` and `index.js` files, set `const local = true`. Then change `const serverIp = 'yourIpAddress';` so that `yourIpAddress` matches your IP address.
+
+You may also want to run your `http-server` on port `80` so that it's easier for clients to connect. To do this, follow the instructions in [Getting Started](#getting-started), but for step 7 you'll want to instead run `http-server -c-1 -p80`. 
+
+Please be aware that your machine may be vulnerable whenever you allow other devices to connect to it.
+
+<center><img src="data/p5.multiplayer_lan.png" alt="Diagram of p5.multiplayer running on a local area network (LAN)" width="600"></center>
+
+#### Remote Server
+[[Back to top]](#p5multiplayer)
+
+This type of configuration is great for making sure as many devices as possible are able to connect to your server. In this case, the *node.js* server is hosted on a remote server and uses [Express](https://expressjs.com/) to serve the "host" and "client" pages to connected devices.
+
+Please see the [directions below](#using-p5multiplayer-with-a-remote-server) for information on how to set this up.
+
+<center><img src="data/p5.multiplayer_remote.png" alt="Diagram of p5.multiplayer running on a remote server." width="600"></center>
 
 ## Using the Template Files
 [[Back to top]](#p5multiplayer)
