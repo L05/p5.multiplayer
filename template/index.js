@@ -34,13 +34,13 @@ function setup() {
   // <----
 
   // Send any initial setup data to your host here.
-  /* Example: 
-     sendData({
-       type: 'playerColor', 
-       r: red(playerColor)/255,
-       g: green(playerColor)/255,
-       b: blue(playerColor)/255
-     });
+  /* 
+    Example: 
+    sendData('myDataType', { 
+      val1: 0,
+      val2: 128,
+      val3: true
+    });
 
      Use `type` to classify message types for host.
   */
@@ -53,7 +53,7 @@ function windowResized() {
 function draw() {
   background(0);
 
-  if(isConnected(display=true)) {
+  if(isClientConnected(display=true)) {
     // Client draw here. ---->
 
 

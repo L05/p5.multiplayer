@@ -1,7 +1,7 @@
 {
-  "name": "p5_sockets",
+  "name": "p5.multiplayer",
   "version": "1.0.0",
-  "description": "p5.js sockets example",
+  "description": "p5.multiplayer example and template",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

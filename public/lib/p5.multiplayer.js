@@ -78,11 +78,12 @@ function _processUrl() {
 // MESSAGING
 
 // Send data from client to host via server
-function sendData(data) {
+function sendData(datatype, data) {
+  data.type   = datatype;
+  data.roomId = roomId;
+
   // print data to console
   console.log('Sending: ' + data);
-
-  data.roomId = roomId;
   
   // Send rotation data to server
   socket.emit('sendData', data);
@@ -92,7 +93,7 @@ function sendData(data) {
 ////////////
 // FLOW CONTROL
 
-function isConnected(display=false) {
+function isClientConnected(display=false) {
   if (waiting) {
     if (display) { _displayWaiting(); }
     return false;

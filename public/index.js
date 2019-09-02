@@ -50,18 +50,17 @@ function setup() {
   // <----
 
   // Send any initial setup data to your host here.
-  /* Example: 
-     sendData({
-       type: 'playerColor', 
-       r: red(playerColor)/255,
-       g: green(playerColor)/255,
-       b: blue(playerColor)/255
-     });
+  /* 
+    Example: 
+    sendData('myDataType', { 
+      val1: 0,
+      val2: 128,
+      val3: true
+    });
 
      Use `type` to classify message types for host.
   */
-  sendData({
-    type: 'playerColor', 
+  sendData('playerColor', { 
     r: red(playerColor)/255,
     g: green(playerColor)/255,
     b: blue(playerColor)/255
@@ -75,7 +74,7 @@ function windowResized() {
 function draw() {
   background(0);
 
-  if(isConnected(display=true)) {
+  if(isClientConnected(display=true)) {
     // Client draw here. ---->
 
     drawGui();
@@ -158,11 +157,10 @@ function onJoystickChange() {
   
   if (thisJ.x != prevJ.x || thisJ.y != prevJ.y) {
     let data = {
-      type: 'joystick', 
       joystickX: thisJ.x,
       joystickY: thisJ.y
     }
-    sendData(data);
+    sendData('joystick', data);
   }
   
   prevJ.x = thisJ.x;
@@ -171,11 +169,10 @@ function onJoystickChange() {
 
 function onButtonChange() {
   let data = {
-    type: 'button', 
     button: button.val
   }
   
-  sendData(data);
+  sendData('button', data);
 }
 
 /// Add these lines below sketch to prevent scrolling on mobile

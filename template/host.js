@@ -73,8 +73,8 @@ function onReceiveData (data) {
   // <---
 
   /* Example:
-     if (data.type === 'joystick') {
-       processJoystick(data);
+     if (data.type === 'myDataType') {
+       processMyData(data);
      }
 
      Use `data.type` to get the message type sent by client.

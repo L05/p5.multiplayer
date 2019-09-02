@@ -15,6 +15,7 @@ This repository contains a set of template files for building a multi-device, mu
     * [Using with Heroku](#using-with-heroku)
         * [What is Heroku?](#what-is-heroku)
         * [Installation](#heroku-installation)
+* [Reference](docs/REFERENCE.md)
 
 ![An example image of the base project in action. It shows a host window on the left side of a screen populated by two colored squares, each matching client controller windows on the right side of the screen.](data/example.png)
 

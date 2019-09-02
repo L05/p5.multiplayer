@@ -65,7 +65,6 @@ function draw () {
 
 function onClientConnect (data) {
   // Client connect logic here. --->
-
   console.log(data.id + ' has connected.');
 
   if (!game.checkId(data.id)) {
@@ -91,6 +90,7 @@ function onClientDisconnect (data) {
 
 function onReceiveData (data) {
   // Input data processing here. --->
+  console.log(data);
 
   if (data.type === 'joystick') {
     processJoystick(data);
@@ -103,6 +103,14 @@ function onReceiveData (data) {
   }
 
   // <----
+
+  /* Example:
+     if (data.type === 'myDataType') {
+       processMyData(data);
+     }
+
+     Use `data.type` to get the message type sent by client.
+  */
 }
 
 ////////////
