@@ -5,6 +5,7 @@
 This repository contains a set of template files for building a multi-device, multiplayer game where multiple clients can connect to a specified host page. The clients and hosts are built using *[p5.js](https://p5js.org)*, and they communicate with each other through a *[node.js](https://nodejs.org/en/download/)* server via *[socket.io](https://socket.io/)* messages.
 
 * [Getting Started](#getting-started)
+* [Examples](#examples)
 * [Using the Template Files](#using-the-template-files)
 * [How does it work?](#how-does-it-work)
     * [Local](#local)
@@ -21,8 +22,6 @@ This repository contains a set of template files for building a multi-device, mu
 * [Support](#support)
 
 ![An example image of the base project in action. It shows a host window on the left side of a screen populated by two colored squares, each matching client controller windows on the right side of the screen.](data/example.png)
-
-If you'd like to see an example video of this template in action, [check this out](https://vimeo.com/274410221).
 
 ## Getting Started
 [[Back to top]](#p5multiplayer)
@@ -56,6 +55,11 @@ They make use of two existing *[p5.js](https://p5js.org)* libraries: *[p5.touchg
 
 If you'd like to start with a completely blank template, however, please navigate to the `template` directory. You'll see comments indicating where to add your game logic and other related code bits that will customize the project to your own specifications. Once you've modified these to your liking, you can copy them into the `public` directory, overwriting the existing files of the same names.
 
+## Examples
+
+* [Live demo hosted on Glitch](https://p5-multiplayer.glitch.me/host.html). *Note: Once the page opens, go to the link at the bottom screen in a second browser.*
+* [Example video of the template in action with Unity.](https://vimeo.com/274410221)
+
 ## How does it work?
 [[Back to top]](#p5multiplayer)
 
@@ -68,7 +72,7 @@ If you'd like to start with a completely blank template, however, please navigat
 
 This type of configuration works great for testing. You can run your *node.js* server on your local machine and test the "host" and "client" pages in separate browswer windows.
 
-<center><img src="data/p5.multiplayer_localhost.png" alt="Diagram of p5.multiplayer running solely on a local computer." width="600"></center>
+<img src="data/p5.multiplayer_localhost.png" alt="Diagram of p5.multiplayer running solely on a local computer." width="600">
 
 #### Local Area Network (LAN)
 [[Back to top]](#p5multiplayer)
@@ -81,7 +85,7 @@ You may also want to run your `http-server` on port `80` so that it's easier for
 
 Please be aware that your machine may be vulnerable whenever you allow other devices to connect to it.
 
-<center><img src="data/p5.multiplayer_lan.png" alt="Diagram of p5.multiplayer running on a local area network (LAN)" width="600"></center>
+<img src="data/p5.multiplayer_lan.png" alt="Diagram of p5.multiplayer running on a local area network (LAN)" width="600">
 
 #### Remote Server
 [[Back to top]](#p5multiplayer)
@@ -90,7 +94,7 @@ This type of configuration is great for making sure as many devices as possible 
 
 Please see the [directions below](#using-p5multiplayer-with-a-remote-server) for information on how to set this up.
 
-<center><img src="data/p5.multiplayer_remote.png" alt="Diagram of p5.multiplayer running on a remote server." width="600"></center>
+<img src="data/p5.multiplayer_remote.png" alt="Diagram of p5.multiplayer running on a remote server." width="600">
 
 ## Using p5.multiplayer with a Remote Server
 
@@ -112,6 +116,19 @@ Please see the [directions below](#using-p5multiplayer-with-a-remote-server) for
 * Projects are subject to a connection limit per hour (see platform [restrictions](https://glitch.com/help/restrictions/)).
 * You must create a Glitch account.
 * A little bit extra setup (but hopefully the below steps make that easier!).
+
+#### Glitch Quickstart
+[[Back to top]](#p5multiplayer)
+
+It's really quick and easy to get up and running with [Glitch](https://glitch.com).
+
+1. Create a free [Glitch](https://glitch.com) account if you don't already have one.
+
+2. Go to [this link](https://glitch.com/~p5-multiplayer), which is a Glitch project containing all of the code from this repository and is already modified to work with Glitch.
+
+3. Open your new project. Glitch will give your project a random name; please rename it at this time (unless you really like the randomly chosen name).
+
+4. 6. In your `host.js` and `index.js` files, change `const serverIp = 'https://p5-multiplayer.glitch.me';` so that what was `p5-multiplayer` now matches your Glitch project name. If you're not sure of what the URL should be, click *Show > In a New Window* at the top of the screen and a new browser window will open with the URL you should use.
 
 #### Glitch Installation
 [[Back to top]](#p5multiplayer)
