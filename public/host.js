@@ -113,6 +113,12 @@ function onReceiveData (data) {
   */
 }
 
+// This is included for testing purposes to demonstrate that
+// messages can be sent from a host back to all connected clients
+function mousePressed() {
+  sendData('timestamp', { timestamp: millis() });
+}
+
 ////////////
 // Input processing
 function processJoystick (data) {

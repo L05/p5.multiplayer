@@ -83,6 +83,25 @@ function draw() {
   }
 }
 
+// Messages can be sent from a host to all connected clients
+function onReceiveData (data) {
+  // Input data processing here. --->
+
+  if (data.type === 'timestamp') {
+    print(data.timestamp);
+  }
+
+  // <----
+
+  /* Example:
+     if (data.type === 'myDataType') {
+       processMyData(data);
+     }
+
+     Use `data.type` to get the message type sent by host.
+  */
+}
+
 ////////////
 // GUI setup
 function setPlayerColors() {
