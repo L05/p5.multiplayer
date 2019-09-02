@@ -61,6 +61,22 @@ function draw() {
   }
 }
 
+// Messages can be sent from a host to all connected clients
+function onReceiveData (data) {
+  // Input data processing here. --->
+  console.log(data);
+
+  // <----
+
+  /* Example:
+     if (data.type === 'myDataType') {
+       processMyData(data);
+     }
+
+     Use `data.type` to get the message type sent by host.
+  */
+}
+
 /// Add these lines below sketch to prevent scrolling on mobile
 function touchMoved() {
   // do some stuff

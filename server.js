@@ -1,6 +1,7 @@
-// Create arrays for tracking hosts and clients
-let hosts   = [];
-let clients = [];
+// Create dictionaries for tracking hosts, clients, and rooms
+let hosts   = {};
+let clients = {};
+let rooms   = {};
 
 ////////////
 // Setup express web server and listen on port 3000
@@ -24,10 +25,11 @@ let io = socket(server);
 io.sockets.on('connection', newConnection);
 function newConnection(socket) {
 
+  // Inform incoming connection of its ID
   console.log('\n' + socket.id + ' is attempting connection...');
   socket.emit('id', socket.id);
 
-  //// Process a request to join.
+  // Process a request to join.
   socket.on('join', function (data) {
 
     // If request is from a client...
@@ -38,43 +40,39 @@ function newConnection(socket) {
       // If the roomId field is not null
       if (data.roomId != null) {
         
-        // Search all existing roomIds for a match
+        // Search existing roomIds for a match
         console.log("Searching for existing room ID...");
-        
-        let found = false;
-        for (let i = 0; i < hosts.length; i++) {
-          if(hosts[i].roomId == data.roomId) {
-            socket.join(data.name);
+        if (rooms[data.roomId] != null) {
 
-            let clientData = {
-              id: socket.id,
-              roomId: data.roomId
-            }
+          // Add client to room with all connected clients 
+          socket.join(data.name);
 
-            // Add client socket ID and room ID to clients list
-            clients.push(clientData);
-
-            // Add client to its own room and to host by room ID
-            socket.join(socket.id);
-            socket.join(data.roomId);
-            console.log('Client added to room '+data.roomId+'.\tNumber of clients: ' + clients.length);
-            found = true;
-
-            // Send match confirmation back to client
-            socket.emit("found", {status: true});
-            break;
+          // Add client and corresponding data to clients dictionary 
+          // by socket ID
+          clients[socket.id] = {
+            type: data.name, 
+            roomId: data.roomId
           }
-        }
 
-        if (!found) {
+          // Add client to its own room and to host room by room ID
+          socket.join([socket.id, data.roomId]);
+          console.log('Client added to room '+data.roomId+'.\tNumber of clients: ' + Object.keys(clients).length);
+
+          // Send match confirmation back to client
+          socket.emit("found", {status: true});
+        }
+        else {
           // Notify client of failure to match
           socket.emit("found", {status: false});
         }
       }
-    } else if (data.name == 'host') {
-      // If the attempted connection is from a host, store the data
-      let roomId = null;
+    } 
+    else if (data.name == 'host') {
+      // If the attempted connection is from a host...
 
+      // Store a transmitted room ID if it exists, otherwise
+      // generate a random gemstone name as room ID.
+      let roomId = null;
       if (data.roomId === null || data.roomId === 'undefined') {
         roomId = makeIdFromList();
       }
@@ -82,47 +80,55 @@ function newConnection(socket) {
         roomId = data.roomId;
       }
 
+      // Add client and corresponding data to devices dictionary 
+      // by socket ID
       let hostData = {
-        id: socket.id,
+        type: data.name,
         roomId: roomId
-      }
+      };
 
-      // Add host socket ID and room ID to hosts list
-      hosts.push(hostData);
+      hosts[socket.id] = hostData;
+      rooms[roomId] = socket.id;
 
-      // TODO: Check for valid room ID. If not valid, create random room ID.
+      // Add host to "host" room, its own room by room ID, and to a room 
+      // with its clients by room ID.
+      socket.join([data.name, 'host:'+hostData.roomId, hostData.roomId]);
 
-      // Add host to "host" room and to its own room by room ID.
-      socket.join(data.name);
-      socket.join(hostData.roomId);
-
-      // Send room ID back to host
+      // Send clients room ID back to host
       socket.emit("hostConnect", hostData);
 
-      console.log('Host added with room ID of ' + hostData.roomId + '.\tNumber of hosts: ' + hosts.length);
-    } else {
+      console.log('Host added with room ID of ' + hostData.roomId + '.\tNumber of hosts: ' + Object.keys(hosts).length);
+    } 
+    else {
       console.log('warning: data type not recognized.')
     }
   })
 
-  //// Process client disconnects.
+  //// Process device disconnects.
   socket.on('disconnect', function () {
     console.log('\n' + socket.id + ' has been disconnected!');
 
-    let endpoint = searchId(socket.id, clients);
-    if (endpoint != null) {
-      clients.splice(endpoint.index, 1);
-      console.log('Client removed.\tNumber of clients: ' + clients.length);
+    if (clients[socket.id] != null) {
+      // If the device is a client, delete it
+      delete clients[socket.id];
+      console.log('Client removed.\tNumber of clients: ' + Object.keys(clients).length);
 
       // Notify hosts that client has disconnected.
-      io.sockets.in('host').emit('clientDisconnect', {id: socket.id});
-    } else {
-      endpoint = searchId(socket.id, hosts);
+      socket.in('host').emit('clientDisconnect', {id: socket.id});
+    } 
+    else if (hosts[socket.id] != null) {
+      // If the device is a host, delete it
+      console.log('Host with ID ' + hosts[socket.id].roomId + ' removed.\tHumber of hosts: ' + Object.keys(hosts).length);
+      delete hosts[socket.id];
 
-      if (endpoint != null) {
-        console.log('Host with ID ' + hosts[endpoint.index].roomId + ' removed.\tHumber of hosts: ' + hosts.length);
-        hosts.splice(endpoint.index, 1);
+      // Remove corresponding room
+      let key = getKeyByValue(rooms, socket.id);
+      if (key != null) {
+        delete rooms[key];
       }
+
+      // TODO: add handling for all clients connected to host when host
+      // is disconnected.
     }
   })
 
@@ -130,43 +136,35 @@ function newConnection(socket) {
   socket.on('clientConnect', onClientConnect);
 
   function onClientConnect(data) {
-    // Get host by room ID
-    let host = searchRoomId(data.roomId, hosts);
-
-    if (host != null) {
+    if (rooms[data.roomId] != null) {
       console.log('clientConnect message received from ' + socket.id + ' for room ' + data.roomId + ".");
-      io.sockets.in(data.roomId).emit('clientConnect', {id: socket.id, roomId: data.roomId});
+      socket.in('host:'+data.roomId).emit('clientConnect', {id: socket.id, roomId: data.roomId});
     }
   }
   
-  //// Reroute data sent from client to host
+  //// Reroute data sent between clients and hosts
   socket.on('sendData', sendData);
 
   function sendData(data) {
-    let host = searchRoomId(data.roomId, hosts);
-
     let packet = {...data};
     packet.id = socket.id;
-
-    if (host != null) {
-      io.sockets.in(data.roomId).emit('receiveData', packet);
+    
+    // If room ID is valid...
+    if (rooms[data.roomId] != null) {
+      if (clients[socket.id] != null) {
+        // And if device is a client, send to corresponding host
+        socket.in('host:'+data.roomId).emit('receiveData', packet);
+      }
+      else if (hosts[socket.id] != null) {
+        // And if device is a host, send to corresponding clients
+        socket.broadcast.in(data.roomId).emit('receiveData', packet);
+      }
     }
   }
 }
 
 ////////////
 // Utility Functions
-function searchId(id_, array_) {
-  for (let i = 0; i < array_.length; i++) {
-    if (array_[i].id == id_) {
-      return {
-        item: array_[i],
-        index: i
-      };
-    }
-  }
-}
-
 function searchRoomId(roomId_, array_) {
   for (let i = 0; i < array_.length; i++) {
     if (array_[i].roomId == roomId_) {
@@ -176,6 +174,10 @@ function searchRoomId(roomId_, array_) {
       };
     }
   }
+}
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
 }
 
 ////////////

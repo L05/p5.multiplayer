@@ -34,6 +34,8 @@ function setupClient() {
   socket.emit('clientConnect', {
     roomId: roomId
   });
+
+  socket.on('receiveData', onReceiveData);
 }
 
 function setupHost() {
@@ -44,6 +46,11 @@ function setupHost() {
   socket = io.connect(addr);
 
   socket.emit('join', {name: 'host', roomId: roomId});
+
+  socket.on('id', function(data) {
+    id = data;
+    console.log("id: " + id);
+  });
 
   socket.on('hostConnect', onHostConnect);
   socket.on('clientConnect', onClientConnect);
@@ -81,9 +88,6 @@ function _processUrl() {
 function sendData(datatype, data) {
   data.type   = datatype;
   data.roomId = roomId;
-
-  // print data to console
-  console.log('Sending: ' + data);
   
   // Send rotation data to server
   socket.emit('sendData', data);

@@ -4,17 +4,20 @@
 
 [Client](#client)
 * [setupClient()](#setupclient)
-* [sendData()](#senddata)
+* [sendData()](#senddata-client)
 * [isClientConnected()](#isclientconnected)
+* [Callbacks](#client-callbacks)
+    * [onReceiveData()](#onreceivedata-client)
 
 [Host](#host)
 * [setupHost()](#setuphost)
+* [sendData()](#senddata-host)
 * [isHostConnected()](#ishostconnected)
 * [displayAddress()](#displayaddress)
-* [Callbacks](#callbacks)
+* [Callbacks](#host-callbacks)
     * [onClientConnect()](#onclientconnect)
     * [onClientDisconnect()](#onclientdisconnect)
-    * [onReceiveData()](#onreceivedata)
+    * [onReceiveData()](#onreceivedata-host)
 
 -----
 
@@ -55,7 +58,7 @@ setupClient()
 
 -----
 
-#### sendData()
+#### sendData() - *Client*
 [[Back to top]](#reference)
 
 ##### Example
@@ -124,6 +127,50 @@ Boolean: `true` if client is connected, `false` otherwise
 
 -----
 
+### Client Callbacks
+User-defined callbacks for handling data received from hosts. These **must** be present in your `index.js` sketch.
+
+-----
+
+#### onReceiveData() - *Client*
+[[Back to top]](#reference)
+
+##### Example
+```javascript
+function onReceiveData (data) {
+  // Input data processing here. --->
+  console.log(data);
+  
+  // <---
+
+  /* Example:
+     if (data.type === 'myDataType') {
+       processMyData(data);
+     }
+
+     Use `data.type` to get the message type sent by host.
+  */
+
+}
+```
+##### Description
+Callback for when data is received from a host. Must be defined in `index.js` sketch. `data` parameter provides all data sent from host and always includes:
+* `.id` String: unique ID of host
+* `.type` String: data type of message
+
+##### Syntax
+```javascript
+onReceiveData (data)
+```
+
+##### Parameters
+`data` Object: contains all data sent from client
+
+##### Returns
+`None`
+
+-----
+
 ## Host
 
 -----
@@ -155,6 +202,41 @@ setupHost()
 
 ##### Parameters
 `None`
+
+##### Returns
+`None`
+
+-----
+
+#### sendData() - *Host*
+[[Back to top]](#reference)
+
+##### Example
+```javascript
+function mousePressed() {
+  sendData('timestamp', { timestamp: millis() });
+}
+```
+```javascript
+let myData = {
+    val1: 0,
+    val2: 128,
+    val3: true
+}
+
+sendData('myDataType', myData);
+```
+##### Description
+Sends JavaScript object message of specified data type from host to all connected clients.
+
+##### Syntax
+```javascript
+sendData(datatype, data)
+```
+
+##### Parameters
+`datatype` String: data type of message
+`data` Object: a JavaScript object containing user-defined values
 
 ##### Returns
 `None`
@@ -231,7 +313,7 @@ displayAddress()
 
 -----
 
-### Callbacks
+### Host Callbacks
 User-defined callbacks for handling client connections and disconnections and data received from clients. These **must** be present in your `host.js` sketch.
 
 -----
@@ -294,7 +376,7 @@ onClientDisconnect (data)
 
 -----
 
-#### onReceiveData()
+#### onReceiveData() - *Host*
 [[Back to top]](#reference)
 
 ##### Example
