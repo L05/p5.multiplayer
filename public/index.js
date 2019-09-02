@@ -166,7 +166,7 @@ function setupUI() {
     fillBgHover: playerColorDim,
     fillBgActive: playerColor
   });
-  button.onChange = onButtonChange;
+  button.onPress = onButtonPress;
 }
 
 ////////////
@@ -187,7 +187,7 @@ function onJoystickChange() {
   prevJ.y = thisJ.y;
 }
 
-function onButtonChange() {
+function onButtonPress() {
   let data = {
     button: button.val
   }
