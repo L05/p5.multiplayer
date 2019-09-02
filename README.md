@@ -5,11 +5,11 @@
 This repository contains a set of template files for building a multi-device, multiplayer game where multiple clients can connect to a specified host page. The clients and hosts are built using *[p5.js](https://p5js.org)*, and they communicate with each other through a *[node.js](https://nodejs.org/en/download/)* server via *[socket.io](https://socket.io/)* messages.
 
 * [Getting Started](#getting-started)
+* [Using the Template Files](#using-the-template-files)
 * [How does it work?](#how-does-it-work)
     * [Local](#local)
     * [Local Area Network (LAN)](#local-area-network-lan)
     * [Remote Server](#remote-server)
-* [Using the Template Files](#using-the-template-files)
 * [Using p5.multiplayer with a Remote Server](#using-p5multiplayer-with-a-remote-server)
     * [Using with Glitch](#using-with-glitch)
         * [What is Glitch?](#what-is-glitch)
@@ -26,7 +26,7 @@ If you'd like to see an example video of this template in action, [check this ou
 ## Getting Started
 [[Back to top]](#p5multiplayer)
 
-1. Clone this GitHub repo on your local machine.
+1. Clone this GitHub repository on your local machine.
 
 2. If you don't already have *node.js* installed on your machine, go [here](https://nodejs.org/en/download/) and download the version appropriate for your operating system.
 
@@ -45,6 +45,15 @@ If you'd like to see an example video of this template in action, [check this ou
 9. Open a second browser and go to the URL displayed on your host page. It will look something like `http://127.0.0.1:8080/index.html?=roomId`, where `roomId` is a randomly generated name. This screen will load a controller that let's you control the movement of a colored square on the host page.
 
 10. (OPTIONAL) The included *node.js* server cleverly lets you specify a custom room ID (think of it as a semi-private game room). You can specify your own room ID by opening a host page using `http://127.0.0.1:8080/host.html?=roomId`, where `roomId` is a string of your choice.
+
+## Using the Template Files
+[[Back to top]](#p5multiplayer)
+
+The `host.js`, `host.html`, `index.js`, and `index.html` files located within the `public` directory are a basic game example and should have everything you need to start building your own browser-based game.
+
+They make use of two existing *[p5.js](https://p5js.org)* libraries: *[p5.touchgui](https://github.com/L05/p5.touchgui)*, which enables easy creation of mouse and touchscreen GUI elements, and *[p5.play](https://molleindustria.github.io/p5.play/)*, which enables easy creation of 2D sprite games within *p5.js*.
+
+If you'd like to start with a completely blank template, however, please navigate to the `template` directory. You'll see comments indicating where to add your game logic and other related code bits that will customize the project to your own specifications. Once you've modified these to your liking, you can copy them into the `public` directory, overwriting the existing files of the same names.
 
 ## How does it work?
 [[Back to top]](#p5multiplayer)
@@ -82,15 +91,6 @@ Please see the [directions below](#using-p5multiplayer-with-a-remote-server) for
 
 <center><img src="data/p5.multiplayer_remote.png" alt="Diagram of p5.multiplayer running on a remote server." width="600"></center>
 
-## Using the Template Files
-[[Back to top]](#p5multiplayer)
-
-The `host.js`, `host.html`, `index.js`, and `index.html` files located within the `public` directory are a basic game example and should have everything you need to start building your own browser-based game.
-
-They make use of two existing *[p5.js](https://p5js.org)* libraries: *[p5.touchgui](https://github.com/L05/p5.touchgui)*, which enables easy creation of mouse and touchscreen GUI elements, and *[p5.play](https://molleindustria.github.io/p5.play/)*, which enables easy creation of 2D sprite games within *p5.js*.
-
-If you'd like to start with a completely blank template, however, please navigate to the `template` directory. You'll see comments indicating where to add your game logic and other related code bits that will customize the project to your own specifications. Once you've modified these to your liking, you can copy them into the `public` directory, overwriting the existing files of the same names.
-
 ## Using p5.multiplayer with a Remote Server
 
 ### Using with Glitch
@@ -119,7 +119,7 @@ If you'd like to start with a completely blank template, however, please navigat
 
 2. Once logged in, click *New Project > Clone from Git Repo*.
 
-3. Copy the URL `https://github.com/L05/p5.multiplayer` and paste it where instructed to *Paste the full URL of your repository*.
+3. Copy this repository URL `https://github.com/L05/p5.multiplayer` and paste it where instructed to *Paste the full URL of your repository*.
 
 4. You will be taken to an editor screen. If not, make sure to *Edit your project*.
 
@@ -171,3 +171,12 @@ If you'd like to start with a completely blank template, however, please navigat
 
 9. In a second browser window, go to the aforementioned URL. You should see a "client" screen displaying a simple controller that lets you control a colored square in your "host" screen.
 
+
+# Support
+
+Please use *p5.multiplayer* and let me know if you have any feedback!
+
+* Do you **use it in a project**? What works and doesn't work?
+* Do you **teach it in a class**? What works and doesn't work?
+
+Any questions pertaining to this project may be communicated via Issues on the [p5.multiplayer GitHub repository](https://github.com/L05/p5.multiplayer). Simply create a new Issue and either assign or tag me in the conversation with [@L05](https://github.com/L05).
