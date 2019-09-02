@@ -14,6 +14,7 @@ This repository contains a set of template files for building a multi-device, mu
 * [Using p5.multiplayer with a Remote Server](#using-p5multiplayer-with-a-remote-server)
     * [Using with Glitch](#using-with-glitch)
         * [What is Glitch?](#what-is-glitch)
+        * [Quickstart](#glitch-quickstart)
         * [Installation](#glitch-installation)
     * [Using with Heroku](#using-with-heroku)
         * [What is Heroku?](#what-is-heroku)
