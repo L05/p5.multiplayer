@@ -37,9 +37,12 @@ let playerColorDim;
 
 // <----
 
+function preload() {
+  setupClient();
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  setupClient();
 
   // Client setup here. ---->
   

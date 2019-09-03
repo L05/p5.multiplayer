@@ -28,10 +28,12 @@ let game;
 
 // <----
 
+function preload() {
+  setupHost();
+}
+
 function setup () {
   createCanvas(windowWidth, windowHeight);
-
-  setupHost();
 
   // Host/Game setup here. ---->
   
