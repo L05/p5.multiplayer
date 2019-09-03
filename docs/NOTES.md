@@ -13,4 +13,4 @@
 * Build example Unreal host template
 * Build example TouchDesigner host template
 * ~~Add documentation about bidirectional communication to reference~~
-* Add documentation section about custom hosts
+* ~~Add documentation section about custom hosts~~

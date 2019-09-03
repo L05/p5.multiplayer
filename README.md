@@ -19,6 +19,7 @@ This repository contains a set of template files for building a multi-device, mu
     * [Using with Heroku](#using-with-heroku)
         * [What is Heroku?](#what-is-heroku)
         * [Installation](#heroku-installation)
+* [Custom Hosts](#custom-hosts)
 * [Reference](docs/REFERENCE.md)
 * [Support](#support)
 
@@ -184,8 +185,21 @@ It's really quick and easy to get up and running with [Glitch](https://glitch.co
 
 9. In a second browser window, go to the aforementioned URL. You should see a "client" screen displaying a simple controller that lets you control a colored square in your "host" screen.
 
+## Custom Hosts
+[[Back to top]](#p5multiplayer)
 
-# Support
+*p5.multiplayer* can be used with custom hosts as long as they implement the core functionality of `setupHost()` and `sendData()` present in [p5.multiplayer.js](public/lib/p5.multiplayer.js). 
+
+For example, the host should emit a `'join'` event with `{name: 'host', roomId: roomId}` as data, and the host should register handlers for `'hostconnect'`, `'clientConnect'`, `'clientDisconnect'`, and `'receiveData'`.
+
+Any additional game logic, rendering, etc. can be included beyond that.
+
+An [Unreal Engine](https://unrealengine.com) based custom host example and template is currently in development and will be shared as soon as it is available.
+
+<img src="data/p5.multiplayer_custom_host.png" alt="Diagram of p5.multiplayer running on a remote server with a custom host." width="600">
+
+## Support
+[[Back to top]](#p5multiplayer)
 
 Please use *p5.multiplayer* and let me know if you have any feedback!
 
