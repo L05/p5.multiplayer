@@ -27,7 +27,7 @@ const local         = true;   // true if running locally, false
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  setupClient();
+  setupController();
 
   // Client setup here. ---->
 

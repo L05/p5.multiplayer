@@ -28,10 +28,12 @@ let game;
 
 // <----
 
-function setup () {
-  createCanvas(windowWidth, windowHeight);
+function preload() {
+  setupScreen();
+}
 
-  setupHost();
+function setup() {
+  createCanvas(windowWidth, windowHeight);
 
   // Host/Game setup here. ---->
   
@@ -44,10 +46,10 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
 
-function draw () {
+function draw() {
   background(15);
 
-  if(isHostConnected(display=true)) {
+  if(isScreenConnected(display=true)) {
     // Host/Game draw here. --->
 
     // Display player IDs in top left corner
@@ -63,8 +65,8 @@ function draw () {
   }
 }
 
-function onClientConnect (data) {
-  // Client connect logic here. --->
+function onControllerConnect (data) {
+  // Controller connect logic here. --->
   console.log(data.id + ' has connected.');
 
   if (!game.checkId(data.id)) {
@@ -78,8 +80,8 @@ function onClientConnect (data) {
   // <----
 }
 
-function onClientDisconnect (data) {
-  // Client disconnect logic here. --->
+function onControllerDisconnect (data) {
+  // Controller disconnect logic here. --->
 
   if (game.checkId(data.id)) {
     game.remove(data.id);

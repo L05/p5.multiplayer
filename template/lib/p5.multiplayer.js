@@ -4,13 +4,13 @@ let roomId          = null;
 let waiting         = true;
 let connected       = false;
 let id              = null;
-let hostConnected   = false;
+let screenConnected   = false;
 
 
 ////////////
 // SETUP
 
-function setupClient() {
+function setupController() {
   _processUrl();
 
   // Socket.io - open a connection to the web server on specified port
@@ -36,7 +36,7 @@ function setupClient() {
   });
 }
 
-function setupHost() {
+function setupScreen() {
   _processUrl();
 
   let addr = serverIp;
@@ -45,15 +45,15 @@ function setupHost() {
 
   socket.emit('join', {name: 'host', roomId: roomId});
 
-  socket.on('hostConnect', onHostConnect);
+  socket.on('hostConnect', onScreenConnect);
   socket.on('clientConnect', onClientConnect);
-  socket.on('clientDisconnect', onClientDisconnect);
+  socket.on('clientDisconnect', onControllerDisconnect);
   socket.on('receiveData', onReceiveData);
 }
 
-function onHostConnect (data) {
+function onScreenConnect (data) {
   console.log("Host connected to server.");
-  hostConnected = true;
+  screenConnected = true;
   
   if (roomId === null || roomId === 'undefined') {
     roomId = data.roomId;
@@ -106,8 +106,8 @@ function isClientConnected(display=false) {
   return true;
 }
 
-function isHostConnected(display=false) {
-  if (!hostConnected) {
+function isScreenConnected(display=false) {
+  if (!screenConnected) {
     if (display) { _displayWaiting(); }
     return false;
   }

@@ -37,9 +37,12 @@ let playerColorDim;
 
 // <----
 
+function preload() {
+  setupController();
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  setupClient();
 
   // Client setup here. ---->
   
@@ -75,7 +78,7 @@ function windowResized() {
 function draw() {
   background(0);
 
-  if(isClientConnected(display=true)) {
+  if(isControllerConnected(display=true)) {
     // Client draw here. ---->
 
     drawGui();
