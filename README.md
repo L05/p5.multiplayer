@@ -86,7 +86,7 @@ Please be aware that your machine may be vulnerable whenever you allow other dev
 #### Remote Server
 [[Back to top]](#p5multiplayer)
 
-This type of configuration is great for making sure as many devices as possible are able to connect to your server. In this case, the *node.js* server is hosted on a remote server and uses [Express](https://expressjs.com/) to serve the "host" and "client" pages to connected devices.
+This type of configuration is great for making sure as many devices as possible are able to connect to your server. In this case, the *node.js* server is hosted on a remote server and uses [Express](https://expressjs.com/) to serve the "host" and "client" pages to connected devices. The increased connectivity afforded by using a remote server comes at the cost of latency, which may or may not be noticeable depending on server, network speed of each connected device, and user interaction design.
 
 Please see the [directions below](#using-p5multiplayer-with-a-remote-server) for information on how to set this up.
 
