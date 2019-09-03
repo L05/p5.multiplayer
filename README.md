@@ -37,15 +37,11 @@ This repository contains a set of template files for building a multi-device, mu
 
 5. Next, run the command `node server.js` to start a *node.js* server.
 
-6. Open a second terminal window and navigate to the `public` folder within the project directory.
+6. Open a browser and go to `http://127.0.0.1:3000/host.html`. This will open up a host page. Make note of the URL displayed in the bottom left corner of the screen.
 
-7. Run `http-server -c-1` to start server. This will default to port *8080*.
+7. Open a second browser and go to the URL displayed on your host page. It will look something like `http://127.0.0.1:3000/?=roomId`, where `roomId` is a randomly generated name. This screen will load a controller that let's you control the movement of a colored square on the host page.
 
-8. Open a browser and go to `http://127.0.0.1:8080/host.html`. This will open up a host page. Make note of the URL displayed in the bottom left corner of the screen.
-
-9. Open a second browser and go to the URL displayed on your host page. It will look something like `http://127.0.0.1:8080/index.html?=roomId`, where `roomId` is a randomly generated name. This screen will load a controller that let's you control the movement of a colored square on the host page.
-
-10. (OPTIONAL) The included *node.js* server cleverly lets you specify a custom room ID (think of it as a semi-private game room). You can specify your own room ID by opening a host page using `http://127.0.0.1:8080/host.html?=roomId`, where `roomId` is a string of your choice.
+8. (OPTIONAL) The included *node.js* server cleverly lets you specify a custom room ID (think of it as a semi-private game room). You can specify your own room ID by opening a host page using `http://127.0.0.1:8080/host.html?=roomId`, where `roomId` is a string of your choice.
 
 ## Using the Template Files
 [[Back to top]](#p5multiplayer)
@@ -81,8 +77,6 @@ This type of configuration works great for testing. You can run your *node.js* s
 You can set up a multiplayer game or interactive installation on a local area network (LAN) that will enable multiple devices to connect to your machine. You'll need to know your machine's IP address and use that as your `serverIp` in order for this to work (how to find your IP address on [MacOS](https://www.macworld.co.uk/how-to/mac/ip-address-3676112/) / [Windows](https://support.microsoft.com/en-us/help/4026518/windows-10-find-your-ip-address)).
 
 In your `host.js` and `index.js` files, set `const local = true`. Then change `const serverIp = 'yourIpAddress';` so that `yourIpAddress` matches your IP address.
-
-You may also want to run your `http-server` on port `80` so that it's easier for clients to connect. To do this, follow the instructions in [Getting Started](#getting-started), but for step 7 you'll want to instead run `http-server -c-1 -p80`. 
 
 Please be aware that your machine may be vulnerable whenever you allow other devices to connect to it.
 
