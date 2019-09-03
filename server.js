@@ -118,8 +118,9 @@ function newConnection(socket) {
     } 
     else if (hosts[socket.id] != null) {
       // If the device is a host, delete it
-      console.log('Host with ID ' + hosts[socket.id].roomId + ' removed.\tHumber of hosts: ' + Object.keys(hosts).length);
+      let roomId = hosts[socket.id].roomId;
       delete hosts[socket.id];
+      console.log('Host with ID ' + roomId + ' removed.\tHumber of hosts: ' + Object.keys(hosts).length);
 
       // Remove corresponding room
       let key = getKeyByValue(rooms, socket.id);
