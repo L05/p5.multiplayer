@@ -29,10 +29,6 @@ function newConnection(socket) {
   console.log('\n' + socket.id + ' is attempting connection...');
   socket.emit('id', socket.id);
 
-  socket.on('test', function (data) {
-    console.log('TEST');
-  });
-
   // Process a request to join.
   socket.on('join', function (data) {
 
