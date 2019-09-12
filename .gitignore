@@ -1,1 +1,4 @@
 node_modules
+
+# Cert/Key Files
+*.pem

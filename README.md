@@ -20,6 +20,7 @@ This repository contains a set of template files for building a multi-device, mu
         * [What is Heroku?](#what-is-heroku)
         * [Installation](#heroku-installation)
 * [Custom Hosts](#custom-hosts)
+* [Using an HTTPS Server](#using-an-https-server)
 * [Reference](docs/REFERENCE.md)
 * [Support](#support)
 
@@ -197,6 +198,33 @@ Any additional game logic, rendering, etc. can be included beyond that.
 An [Unreal Engine](https://unrealengine.com) based custom host example and template is currently in development and will be shared as soon as it is available.
 
 <img src="data/p5.multiplayer_custom_host.png" alt="Diagram of p5.multiplayer running on a remote server with a custom host." width="600">
+
+## Using an HTTPS Server
+[[Back to top]](#p5multiplayer)
+
+If needed, you can run a secure HTTPS server instead of an HTTP server ([learn more about the difference here](https://www.cloudflare.com/learning/ssl/why-is-http-not-secure/)), and some applications may only work with HTTPS. For instance, TouchDesigner currently only supports [Socket IO connections over HTTPS](http://derivative.ca/Forum/viewtopic.php?f=4&t=19894). As a note, this section is generally more applicable to local or self-administered server configurations; Glitch and Heroku automatically set up HTTPS for you when using their services to run a remote server.
+
+In order to use an HTTPS server, you'll need an SSL certificate. To do this, open a terminal window and navigate to the project's root directory (where `server.js` and `secureServer.js` are located).
+
+Next, follow these instructions from [nodejs.org](https://nodejs.org/en/knowledge/HTTP/servers/how-to-create-a-HTTPS-server/):
+
+*We need to start out with a word about SSL certificates. Speaking generally, there are two kinds of certificates: those signed by a 'Certificate Authority', or CA, and 'self-signed certificates'. A Certificate Authority is a trusted source for an SSL certificate, and using a certificate from a CA allows your users to be trust the identity of your website. In most cases, you would want to use a CA-signed certificate in a production environment - for testing purposes, however, a self-signed certicate will do just fine.*
+
+*To generate a self-signed certificate, run the following in your shell:*
+
+```
+openssl genrsa -out key.pem
+openssl req -new -key key.pem -out csr.pem
+openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
+rm csr.pem
+```
+
+*This should leave you with two files, `cert.pem` (the certificate) and `key.pem` (the private key). Put these files in the same directory as your Node.js server file. This is all you need for a SSL connection.*
+
+Once you have generated an SSL certificate, you'll follow the same instructions outlined in [Getting Started](#getting-started), but instead of running `node server.js` in Step 5, you'll instead run `node secureServer.js`.
+
+Please note that some browsers may block or issue a warning when pointed to an HTTPS server with a self-signed SSL certificate. For more information on this, [please read here](https://devcenter.heroku.com/articles/ssl-certificate-self).
+
 
 ## Support
 [[Back to top]](#p5multiplayer)

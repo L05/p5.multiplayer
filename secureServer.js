@@ -4,11 +4,20 @@ let clients = {};
 let rooms   = {};
 
 ////////////
+// Required for secure server
+const fs = require('fs');
+
+const options = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
+
 // Setup express web server and listen on port 3000
 let express = require('express');
 let app = express();
-let port=Number(process.env.PORT || 3000);
-let server = app.listen(port);
+let port = Number(process.env.PORT || 3000);
+let server = require('https').createServer(options, app);
+server.listen(port);
 
 app.use(express.static('public'));
 console.log("My socket server is running on port " + port);
